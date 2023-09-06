@@ -2,13 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
-//import { Auth } from '../auth/decorators/auth.decorator';
-//import { Role } from '../common/enums/rol.enum';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { Role } from '../common/enums/rol.enum';
 import {Request} from "express";
 import { SelectQueryBuilder } from 'typeorm';
 import {Patient} from "./entities/patient.entity";
 
-//@Auth(Role.USER)
+@Auth(Role.ADMIN)
 @Controller('patients')
 export class PatientsController {
   constructor(private  patientsService: PatientsService) {}
