@@ -8,7 +8,7 @@ import {Request} from "express";
 import { SelectQueryBuilder } from 'typeorm';
 import {Patient} from "./entities/patient.entity";
 
-@Auth(Role.ADMIN)
+@Auth(Role.USER)
 @Controller('patients')
 export class PatientsController {
   constructor(private  patientsService: PatientsService) {}
@@ -58,7 +58,7 @@ export class PatientsController {
       builder.orderBy('patients.id', sort.toUpperCase() === 'DESC' ? 'DESC' : 'ASC');
     }
 
-    const perPage = 4;
+    const perPage = 7;
 
     if (page === undefined) {
       // If page is undefined, set it to 1 by default
