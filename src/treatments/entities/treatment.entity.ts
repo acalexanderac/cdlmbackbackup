@@ -25,13 +25,13 @@ id: number;
   @Column({ type: 'date' })
   fechaTratamiento: string;
 
-    @Column()
+    @Column({ nullable: true })
     tipoAnestesia: string;
 
-    @Column()
+    @Column({ nullable: true })
     anestesia: boolean;
 
-    @Column()
+    @Column({ nullable: true})
     observaciones: string;
 
 @ManyToOne(() => Patient, (paciente) => paciente.id, {

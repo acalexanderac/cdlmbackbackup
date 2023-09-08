@@ -21,13 +21,13 @@ export class Patient {
     @Column()
     estadoCivil: string;
 
-    @Column()
+    @Column({ nullable: true })
     noIggs: string;
 
     @Column()
     telefono: number;
 
-    @Column()
+    @Column({ nullable: true })
     religion: string;
 
     @DeleteDateColumn()

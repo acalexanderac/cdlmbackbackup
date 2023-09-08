@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateTreatmentypeDto } from './dto/create-treatmentype.dto';
 import { UpdateTreatmentypeDto } from './dto/update-treatmentype.dto';
 import { Treatmentype } from './entities/treatmentype.entity';
-import { Repository } from 'typeorm';
+import {Repository, SelectQueryBuilder} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+
 
 @Injectable()
 export class TreatmentypesService {
@@ -31,4 +32,15 @@ export class TreatmentypesService {
  async remove(id: number) {
     return this.treatmentTypesRepository.softDelete(id);
   }
+
+    async searchTreatTypes(term: string): Promise<Treatmentype[]> {
+        return this.treatmentTypesRepository.createQueryBuilder('treatmentypes')
+            .where('treatmentypes.name = :term OR treatmentypes.id = :term', { term })
+            .getMany();
+    }
+
+    createQueryBuilder(alias: string): SelectQueryBuilder<Treatmentype> {
+        return this.treatmentTypesRepository.createQueryBuilder(alias);
+    }
+
 }

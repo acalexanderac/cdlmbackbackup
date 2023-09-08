@@ -6,7 +6,7 @@ export class Treatmentype {
     @Column({ primary: true, generated : true })
     id: number;
 
-    @Column({})
+    @Column({unique: true})
     name: string;
 
 
