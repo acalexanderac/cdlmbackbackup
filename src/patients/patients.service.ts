@@ -8,31 +8,23 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 @Injectable()
 export class PatientsService {
 
-  constructor(
-    @InjectRepository(Patient)
-    private readonly patientRepository: Repository<Patient>
-  ) { }
-  
-  async create(createPatientDto: CreatePatientDto) {
-    if (createPatientDto.edadPaciente < 18) {
-      const uniqueId = `MENOR${Math.floor(Math.random() * 100000)}`;
+    constructor(
+        @InjectRepository(Patient)
+        private readonly patientRepository: Repository<Patient>
+    ) { }
 
-      createPatientDto.docIdentificacion = uniqueId;
-    } else {
-      if (!createPatientDto.docIdentificacion) {
-         const uniqueId = `PROVISIONAL${Math.floor(Math.random() * 100000)}`;
+    async create(createPatientDto: CreatePatientDto) {
+        // Verifica si docIdentificacion no se proporciona o es nulo
+        if (!createPatientDto.docIdentificacion) {
+            // Genera un valor provisional único si docIdentificacion está en blanco
+            const uniqueId = `PROV${Math.floor(Math.random() * 1000000)}`;
+            createPatientDto.docIdentificacion = uniqueId;
+        }
 
-      createPatientDto.docIdentificacion = uniqueId;
-      } else {
-        if (createPatientDto.docIdentificacion && createPatientDto.edadPaciente > 18)
-          createPatientDto.docIdentificacion;
-      }
-    } 
-    // Crear y guardar el paciente en la base de datos
-    const newPatient = this.patientRepository.create(createPatientDto);
-    return await this.patientRepository.save(newPatient);
-  
-  }
+        // Crear y guardar el paciente en la base de datos
+        const newPatient = this.patientRepository.create(createPatientDto);
+        return await this.patientRepository.save(newPatient);
+    }
     async findOne(id: number) {
         return await this.patientRepository.findOneBy({ id });
     }
@@ -52,29 +44,29 @@ export class PatientsService {
     }
 
 
- async update(id: number, updatePatientDto: UpdatePatientDto) {
-  if (!updatePatientDto.docIdentificacion) {
-    // Genera un valor provisional único si docIdentificacion está en blanco
-    const uniqueId = `PROVISIONAL${Math.floor(Math.random() * 100000)}`;
-    updatePatientDto.docIdentificacion = uniqueId;
-  }
+    async update(id: number, updatePatientDto: UpdatePatientDto) {
+        // Obtén el paciente actual de la base de datos
+        const existingPatient = await this.patientRepository.findOne({ where: { id } });
 
-  // Actualiza el paciente en la base de datos
-  const updatedPatient = await this.patientRepository.update(id, updatePatientDto);
+        if (!existingPatient) {
+            throw new Error('El paciente no existe.');
+        }
 
-  return updatedPatient;
-}
+        // Actualiza el paciente en la base de datos sin restricciones
+        return await this.patientRepository.update(id, updatePatientDto);
+    }
 
 
- async remove(id: number) {
-    return await this.patientRepository.softDelete(id);
- }
-  
-  async searchPatients(term: string): Promise<Patient[]> {
-    return this.patientRepository.createQueryBuilder('patient')
-      .where('patient.docIdentificacion = :term OR patient.id = :term', { term })
-      .getMany();
-  }
+
+    async remove(id: number) {
+        return await this.patientRepository.softDelete(id);
+    }
+
+    async searchPatients(term: string): Promise<Patient[]> {
+        return this.patientRepository.createQueryBuilder('patient')
+            .where('patient.docIdentificacion = :term OR patient.id = :term', { term })
+            .getMany();
+    }
 
     createQueryBuilder(alias: string): SelectQueryBuilder<Patient> {
         return this.patientRepository.createQueryBuilder(alias);
