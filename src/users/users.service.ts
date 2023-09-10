@@ -8,8 +8,8 @@ import { User } from "./entities/user.entity";
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+      @InjectRepository(User)
+      private readonly usersRepository: Repository<User>
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -21,11 +21,11 @@ export class UsersService {
   }
 
   findOneByEmailWithPassword(email: string) {
-  return this.usersRepository.findOne({
-    where: { email },
-    select: ['id', 'name', 'email', 'password', 'role'],
-  });
-}
+    return this.usersRepository.findOne({
+      where: { email },
+      select: ['id', 'name', 'email', 'password', 'role'],
+    });
+  }
 
 
   findAll() {
