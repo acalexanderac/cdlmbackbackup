@@ -34,15 +34,13 @@ id: number;
     @Column({ nullable: true})
     observaciones: string;
 
-@ManyToOne(() => Patient, (paciente) => paciente.id, {
-    // cascade: true,
-    eager: true, // para que traiga las gente al hacer un findOne
-  })
-  paciente: Patient;
+    @ManyToOne(() => Patient, (patient) => patient.treatments, {
+        eager: true,
+    })
+    paciente: Patient;
 
-
-  @ManyToOne(() => Treatmentype, (treatmentype) => treatmentype.id, {
-    eager: true, // para que traiga los nombres
-  })
-  treatmentype: Treatmentype;
+    @ManyToOne(() => Treatmentype, (treatmentype) => treatmentype.treatments, {
+        eager: true,
+    })
+    treatmentype: Treatmentype;
 }

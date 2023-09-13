@@ -9,10 +9,8 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-//import { AuthGuard } from './auth.guard';
 import { Request } from 'express';
-//import { Roles } from './decorators/roles.decorator';
-//import { RolesGuard } from './guard/roles.guard';
+
 import { Role } from '../common/enums/rol.enum';
 import { Auth } from './decorators/auth.decorator';
 import { ActiveUser } from '../common/decorators/active-user.decorator';
@@ -42,9 +40,5 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
- @Get('profile')
-  @Auth(Role.USER)
-  profile(@ActiveUser() user: ActiveUserInterface) {
-    return this.authService.profile(user);
-  }
+
 }

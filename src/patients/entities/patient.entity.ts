@@ -1,4 +1,5 @@
-import { Column, Entity, DeleteDateColumn, CreateDateColumn, BeforeInsert, BeforeUpdate } from "typeorm";
+import {Column, Entity, DeleteDateColumn, CreateDateColumn, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
+import { Treatment } from "../../treatments/entities/treatment.entity"; // Import the Treatment entity
 
 @Entity()
 export class Patient {
@@ -44,4 +45,6 @@ fechaNacimiento: string;
     const ageInMillis = currentDate.getTime() - birthDate.getTime();
     this.edadPaciente = Math.floor(ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
   }
+    @OneToMany(() => Treatment, (treatment) => treatment.paciente) // Define the OneToMany relationship
+    treatments: Treatment[]; // Define the 'treatments' property
 }
