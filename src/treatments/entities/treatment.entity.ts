@@ -37,7 +37,7 @@ id: number;
     @ManyToOne(() => Patient, (patient) => patient.treatments, {
         eager: true,
     })
-    paciente: Patient;
+    patient: Patient;
 
     @ManyToOne(() => Treatmentype, (treatmentype) => treatmentype.treatments, {
         eager: true,

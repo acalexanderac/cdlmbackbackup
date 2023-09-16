@@ -45,6 +45,6 @@ fechaNacimiento: string;
     const ageInMillis = currentDate.getTime() - birthDate.getTime();
     this.edadPaciente = Math.floor(ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
   }
-    @OneToMany(() => Treatment, (treatment) => treatment.paciente) // Define the OneToMany relationship
+    @OneToMany(() => Treatment, (treatment) => treatment.patient) // Define the OneToMany relationship
     treatments: Treatment[]; // Define the 'treatments' property
 }

@@ -22,7 +22,7 @@ export class TreatmentsService {
     ) { }
 
     async create(createTreatmentDto: CreateTreatmentDto) {
-        const paciente = await this.patientsRepository.findOne({
+        const patient = await this.patientsRepository.findOne({
             where: {
                 docIdentificacion: createTreatmentDto.patient,
             },
@@ -33,7 +33,7 @@ export class TreatmentsService {
             },
         });
 
-        if (!paciente) {
+        if (!patient) {
             throw new BadRequestException('Paciente not found');
         }
         if (!treatmentype) {
@@ -45,7 +45,7 @@ export class TreatmentsService {
             tipoAnestesia: createTreatmentDto.tipoAnestesia,
             anestesia: createTreatmentDto.anestesia,
             observaciones: createTreatmentDto.observaciones,
-            paciente,
+            patient,
             treatmentype,
         });
 
@@ -58,7 +58,7 @@ export class TreatmentsService {
     async findAll() {
         return this.treatmentRepository
             .createQueryBuilder('treatment')
-            .leftJoinAndSelect('treatment.paciente', 'patient') // Use 'patient' as the alias
+            .leftJoinAndSelect('treatment.patient', 'patient') // Use 'patient' as the alias
             .leftJoinAndSelect('treatment.treatmentype', 'treatmentype') // Join the treatment type data if needed
             .getMany();
     }
@@ -77,14 +77,14 @@ export class TreatmentsService {
             throw new BadRequestException('Tratamiento no existe');
         }
 
-        let paciente = treatment.paciente;
+        let patient = treatment.patient;
         if (updateTreatmentDto.patient) {
-            paciente = await this.patientsRepository.findOne({
+            patient = await this.patientsRepository.findOne({
                 where: {
                     docIdentificacion: updateTreatmentDto.patient,
                 },
             });
-            if (!paciente) {
+            if (!patient) {
                 throw new BadRequestException('Paciente not found');
             }
         }
@@ -104,7 +104,7 @@ export class TreatmentsService {
         return await this.treatmentRepository.save({
             ...treatment,
             ...updateTreatmentDto,
-            paciente,
+            patient,
             treatmentype: treattype,
         });
     }

@@ -3,9 +3,7 @@ import { CreateTreatmentDto } from './create-treatment.dto';
 import {  IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class UpdateTreatmentDto extends PartialType(CreateTreatmentDto) {
-    @IsOptional() 
-    @IsString()
-    treatmentype: string;
+
     
     @IsOptional()
     @IsString()
@@ -26,4 +24,8 @@ export class UpdateTreatmentDto extends PartialType(CreateTreatmentDto) {
     @IsString()
     @IsOptional()
     patient: string;
+
+    @IsOptional()
+    @IsString()
+    treatmentype: string;
 }

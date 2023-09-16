@@ -2,8 +2,7 @@ import {  IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class CreateTreatmentDto {
        
-      @IsString()
-    treatmentype: string;
+
     
     @IsString()
     fechaTratamiento: string;
@@ -23,5 +22,6 @@ export class CreateTreatmentDto {
     @IsString()
     patient: string;
 
- 
+    @IsString()
+    treatmentype: string;
 }
