@@ -23,9 +23,9 @@ export class UpdateTreatmentDto extends PartialType(CreateTreatmentDto) {
 
     @IsString()
     @IsOptional()
-    patient: string;
+    patient?: string;
 
     @IsOptional()
     @IsString()
-    treatmentype: string;
+    treatmentype?: string;
 }
