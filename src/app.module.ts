@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PatientsModule } from './patients/patients.module';
 import { TreatmentsModule } from './treatments/treatments.module';
 import { TreatmentypesModule } from './treatmentypes/treatmentypes.module';
+import { TipotratamientoespecModule } from './tipotratamientoespec/tipotratamientoespec.module';
+
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
@@ -27,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     PatientsModule,
     TreatmentsModule,
+    TipotratamientoespecModule,
     TreatmentypesModule,
     UsersModule,
     AuthModule,
