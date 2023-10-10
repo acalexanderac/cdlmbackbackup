@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PatientsModule } from './patients/patients.module';
-import { TreatmentsModule } from './treatments/treatments.module';
-import { TreatmentypesModule } from './treatmentypes/treatmentypes.module';
 import { TipotratamientoespecModule } from './tipotratamientoespec/tipotratamientoespec.module';
 
 import { UsersModule } from './users/users.module';
@@ -10,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PacientesModule } from './pacientes/pacientes.module';
 import { CrioterapiasModule } from './crioterapias/crioterapias.module';
+import { ColposcopiaModule } from './colposcopia/colposcopia.module';
 
 @Module({
   imports: [
@@ -29,14 +27,12 @@ import { CrioterapiasModule } from './crioterapias/crioterapias.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    PatientsModule,
     PacientesModule,
-    TreatmentsModule,
     TipotratamientoespecModule,
-    TreatmentypesModule,
     UsersModule,
     AuthModule,
     CrioterapiasModule,
+    ColposcopiaModule,
   ],
   controllers: [],
   providers: [],
