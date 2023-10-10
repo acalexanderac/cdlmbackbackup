@@ -97,7 +97,7 @@ export class TreatmentsService {
                 },
             });
             if (!treattype) {
-                throw new BadRequestException('TreatmentType not found');
+                throw new BadRequestException('Treatment not found');
             }
         }
 
@@ -115,5 +115,13 @@ export class TreatmentsService {
         // Optionally, you can return a success message or status code here.
     }
 
+    createQueryBuilder(alias: string): SelectQueryBuilder<Treatment> {
+        return this.treatmentRepository.createQueryBuilder(alias);
+    }
 
+    async searchPatients(term: string): Promise<Treatment[]> {
+        return this.treatmentRepository.createQueryBuilder('patient')
+            .where('patient.id = :term ', { term })
+            .getMany();
+    }
 }

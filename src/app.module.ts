@@ -8,6 +8,8 @@ import { TipotratamientoespecModule } from './tipotratamientoespec/tipotratamien
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PacientesModule } from './pacientes/pacientes.module';
+import { CrioterapiasModule } from './crioterapias/crioterapias.module';
 
 @Module({
   imports: [
@@ -28,11 +30,13 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
     }),
     PatientsModule,
+    PacientesModule,
     TreatmentsModule,
     TipotratamientoespecModule,
     TreatmentypesModule,
     UsersModule,
     AuthModule,
+    CrioterapiasModule,
   ],
   controllers: [],
   providers: [],
