@@ -17,30 +17,31 @@ export class CrioterapiasService {
   ) { }
 
   async create(createCrioterapiaDto: CreateCrioterapiaDto) {
-      const paciente = await this.pacientesRepository.findOne({
-          where: {
-              docIdentificacion: createCrioterapiaDto.paciente,
-          },
-      });
+    const paciente = await this.pacientesRepository.findOne({
+        where: {
+            docIdentificacion: createCrioterapiaDto.paciente,
+        },
+    });
 
+    if (!paciente) {
+        throw new BadRequestException('Paciente not found');
+    }
 
-      if (!paciente) {
-          throw new BadRequestException('Paciente not found');
-      }
+    if (createCrioterapiaDto.notasCrioterapia !== paciente.docIdentificacion) {
+        throw new BadRequestException('NotasCrioterapia and Paciente.docIdentificacion must have the same value');
+    }
 
+    const crioterapia = this.crioterapiaRepository.create({
+        fechaCrioterapia: createCrioterapiaDto.fechaCrioterapia,
+        anestesia: createCrioterapiaDto.anestesia,
+        tipoAnestesia: createCrioterapiaDto.tipoAnestesia,
+        notasCrioterapia: createCrioterapiaDto.notasCrioterapia,
+        observaciones: createCrioterapiaDto.observaciones,
+        paciente,
+    });
 
-      const crioterapia = this.crioterapiaRepository.create({
-            fechaCrioterapia: createCrioterapiaDto.fechaCrioterapia,
-            anestesia: createCrioterapiaDto.anestesia,
-            tipoAnestesia: createCrioterapiaDto.tipoAnestesia,
-            notasCrioterapia: createCrioterapiaDto.notasCrioterapia,
-          observaciones: createCrioterapiaDto.observaciones,
-          paciente,
-
-      });
-
-      return await this.crioterapiaRepository.save(crioterapia);
-  }
+    return await this.crioterapiaRepository.save(crioterapia);
+}
 
   async findAll() {
     return await this.crioterapiaRepository.find();

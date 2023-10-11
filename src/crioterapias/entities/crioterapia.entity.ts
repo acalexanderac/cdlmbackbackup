@@ -26,7 +26,7 @@ observaciones: string;
 @Column({ nullable: true })
     tipoAnestesia: string;
 
-@Column({ nullable: true })
+@Column({ nullable: false })
     notasCrioterapia: string;
 
 @DeleteDateColumn()
