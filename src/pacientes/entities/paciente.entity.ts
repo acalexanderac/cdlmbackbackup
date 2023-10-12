@@ -1,5 +1,6 @@
 import {Column, Entity, DeleteDateColumn, CreateDateColumn, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
 import {Crioterapia} from "../../crioterapias/entities/crioterapia.entity";
+import { Colposcopia } from "src/colposcopias/entities/colposcopia.entity";
 @Entity()
 export class Paciente {
     @Column({ primary: true, generated: true })
@@ -63,5 +64,8 @@ export class Paciente {
 
     @OneToMany(() => Crioterapia, (crioterapia) => crioterapia.paciente) // Define the OneToMany relationship
     crioterapia: Crioterapia[]; // Define the 'treatments' property
+
+    @OneToMany(() => Colposcopia, (colposcopia) => colposcopia.paciente) // Define the OneToMany relationship
+    colposcopia: Colposcopia[]; // Define the 'treatments' property
 
 }
