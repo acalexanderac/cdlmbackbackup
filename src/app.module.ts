@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ColposcopiasModule } from './colposcopias/colposcopias.module';
+import { PapanicolaousModule } from './papanicolaous/papanicolaous.module';
 
 
 @Module({
@@ -33,6 +34,7 @@ import { ColposcopiasModule } from './colposcopias/colposcopias.module';
     AuthModule,
     CrioterapiasModule,
     ColposcopiasModule,
+    PapanicolaousModule,
   ],
   controllers: [],
   providers: [],
