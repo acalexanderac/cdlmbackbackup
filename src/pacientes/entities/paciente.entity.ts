@@ -2,6 +2,7 @@ import {Column, Entity, DeleteDateColumn, CreateDateColumn, BeforeInsert, Before
 import {Crioterapia} from "../../crioterapias/entities/crioterapia.entity";
 import { Colposcopia } from "src/colposcopias/entities/colposcopia.entity";
 import { Papanicolaous } from "src/papanicolaous/entities/papanicolaous.entity";
+import { Postoperacione } from "src/postoperaciones/entities/postoperacione.entity";
 @Entity()
 export class Paciente {
     @Column({ primary: true, generated: true })
@@ -71,4 +72,8 @@ export class Paciente {
 
     @OneToMany(() => Papanicolaous, (papanicolaou) => papanicolaou.paciente) // Define the OneToMany relationship
     papanicolaou: Papanicolaous[]; // Define the 'treatments' property
+
+    @OneToMany(() => Postoperacione, (postoperaciones) => postoperaciones.paciente) // Define the OneToMany relationship
+    postoperaciones: Postoperacione[]; // Define the 'treatments' property
 }
+
