@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ColposcopiasModule } from './colposcopias/colposcopias.module';
 import { PapanicolaousModule } from './papanicolaous/papanicolaous.module';
 import { PostoperacionesModule } from './postoperaciones/postoperaciones.module';
+import { ClinicadelamujerModule } from './clinicadelamujer/clinicadelamujer.module';
 
 
 @Module({
@@ -37,6 +38,7 @@ import { PostoperacionesModule } from './postoperaciones/postoperaciones.module'
     ColposcopiasModule,
     PapanicolaousModule,
     PostoperacionesModule,
+    ClinicadelamujerModule,
   ],
   controllers: [],
   providers: [],

@@ -75,8 +75,6 @@ export class CrioterapiasController {
     };
   }
 
-
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.crioterapiasService.findOne(+id);
