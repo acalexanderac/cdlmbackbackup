@@ -33,7 +33,15 @@ export class ColposcopiasService {
     const colposcopia = this.colposcopiaRepository.create({
         fechaColposcopia: createColposcopiaDto.fechaColposcopia,
         resultadoBiopsiacervix: createColposcopiaDto.resultadoBiopsiacervix,
-        dpi: createColposcopiaDto.dpi,
+      cuadranteinferiorder: createColposcopiaDto.cuadranteinferiorder,
+      cuadranteinferiorizq: createColposcopiaDto.cuadranteinferiorizq,
+      cuadrantesuperiorder: createColposcopiaDto.cuadrantesuperiorder,
+      cuadrantesuperiorizq: createColposcopiaDto.cuadrantesuperiorizq,
+      notascuadranteinferiorder: createColposcopiaDto.notascuadranteinferiorder,
+      notascuadranteinferiorizq: createColposcopiaDto.notascuadranteinferiorizq,
+      notascuadrantesuperiorder: createColposcopiaDto.notascuadrantesuperiorder,
+      notascuadrantesuperiorizq: createColposcopiaDto.notascuadrantesuperiorizq,  
+      dpi: createColposcopiaDto.dpi,
         observaciones: createColposcopiaDto.observaciones,
         paciente,
     });

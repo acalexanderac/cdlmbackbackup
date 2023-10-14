@@ -11,22 +11,22 @@ export class Papanicolaous {
      @Column({ primary: true, generated: true })
     id: number;
 
-@CreateDateColumn()
+    @CreateDateColumn()
     fechaCreacion: Date;
 
-@Column({ nullable: true })
-observaciones: string;
+    @Column({ nullable: true })
+    observaciones: string;
 
     @Column({ nullable: true })
-resultadoPapanicolaous: string;
+    resultadoPapanicolaous: string;
 
-@Column({type: "date" })
+    @Column({type: "date" })
     fechaPapanicolaous: Date;
-
-@Column({ nullable: false })
+    
+    @Column({ nullable: false })
     dpi: string;
 
-@DeleteDateColumn()
+    @DeleteDateColumn()
     borradoFecha: Date;
 
     @ManyToOne(() => Paciente, (paciente) => paciente.papanicolaou, {

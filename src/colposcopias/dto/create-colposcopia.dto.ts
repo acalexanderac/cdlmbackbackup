@@ -1,4 +1,4 @@
-import {IsOptional, IsString} from "class-validator";
+import {IsBoolean, IsOptional, IsString} from "class-validator";
 
 export class CreateColposcopiaDto {
      @IsString()
@@ -8,6 +8,37 @@ export class CreateColposcopiaDto {
     @IsString()
         resultadoBiopsiacervix: string;
 
+    @IsOptional()
+    @IsBoolean()
+    cuadrantesuperiorizq: boolean;
+
+    @IsOptional()
+    @IsBoolean()
+    cuadrantesuperiorder: boolean;
+    
+    @IsOptional()
+    @IsBoolean()
+    cuadranteinferiorizq: boolean;
+
+    @IsOptional()
+    @IsBoolean()
+    cuadranteinferiorder: boolean;
+
+    @IsOptional()
+    @IsString()
+    notascuadrantesuperiorizq: string;
+
+    @IsOptional()
+    @IsString()
+    notascuadrantesuperiorder: string;
+
+    @IsOptional()
+    @IsString()
+    notascuadranteinferiorizq: string;
+
+    @IsOptional()
+    @IsString()
+    notascuadranteinferiorder: string;
 
     @IsString()
     dpi: string;

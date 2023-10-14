@@ -32,9 +32,10 @@ export class PapanicolaousService {
     }
 
     const papanicolaous = this.papanicolaousRepository.create({
-        fechaPapanicolaous: createPapanicolaousDto.fechaPapanicolaous,
-        resultadoPapanicolaous: createPapanicolaousDto.resultadoPapanicolaous,
-        dpi: createPapanicolaousDto.dpi,
+      fechaPapanicolaous: createPapanicolaousDto.fechaPapanicolaous,
+      resultadoPapanicolaous: createPapanicolaousDto.resultadoPapanicolaous,
+        
+      dpi: createPapanicolaousDto.dpi,
         observaciones: createPapanicolaousDto.observaciones,
         paciente,
     });

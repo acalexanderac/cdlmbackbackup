@@ -23,6 +23,30 @@ resultadoBiopsiacervix: string;
 @Column({type: "date" })
     fechaColposcopia: Date;
 
+     @Column({ nullable: true })
+    cuadrantesuperiorizq: boolean;
+
+    @Column({ nullable: true })
+    cuadrantesuperiorder: boolean;
+
+    @Column({ nullable: true })
+    cuadranteinferiorizq: boolean;
+
+    @Column({ nullable: true })
+    cuadranteinferiorder: boolean;
+
+    @Column({ nullable: true })
+    notascuadrantesuperiorizq: string;
+
+    @Column({ nullable: true })
+    notascuadrantesuperiorder: string;
+
+    @Column({ nullable: true })
+    notascuadranteinferiorizq: string;
+
+    @Column({ nullable: true })
+    notascuadranteinferiorder: string;
+    
 @Column({ nullable: false })
     dpi: string;
 

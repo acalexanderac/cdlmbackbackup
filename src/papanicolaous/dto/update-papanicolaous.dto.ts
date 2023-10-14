@@ -3,15 +3,16 @@ import { CreatePapanicolaousDto } from './create-papanicolaous.dto';
 import { IsOptional, IsString } from 'class-validator';
 
 export class UpdatePapanicolaousDto extends PartialType(CreatePapanicolaousDto) {
-        @IsOptional()     
+    @IsOptional()     
     @IsString()
     fechaPapanicolaous: string;
 
     @IsOptional()
     @IsString()
-        resultadoPapanicolaous: string;
+    resultadoPapanicolaous: string;
 
 
+    
     @IsOptional()
     @IsString()
     dpi: string;

@@ -6,8 +6,7 @@ export class CreatePapanicolaousDto {
 
     @IsOptional()
     @IsString()
-        resultadoPapanicolaous: string;
-
+    resultadoPapanicolaous: string;
 
     @IsString()
     dpi: string;
