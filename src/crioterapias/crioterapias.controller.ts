@@ -46,7 +46,7 @@ export class CrioterapiasController {
     const builder: SelectQueryBuilder<Crioterapia> = this.crioterapiasService.createQueryBuilder('crioterapias');
 
     if (searchString) {
-      builder.where(' crioterapias.tipoAnestesia ILIKE :s  OR crioterapias.notasCrioterapia ILIKE :s ', { s: `%${searchString}%` });
+      builder.where(' crioterapias.observaciones ILIKE :s  OR crioterapias.notasCrioterapia ILIKE :s ', { s: `%${searchString}%` });
     }
 
     if (sort) {

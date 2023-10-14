@@ -33,8 +33,15 @@ export class CrioterapiasService {
 
     const crioterapia = this.crioterapiaRepository.create({
         fechaCrioterapia: createCrioterapiaDto.fechaCrioterapia,
-        anestesia: createCrioterapiaDto.anestesia,
-        tipoAnestesia: createCrioterapiaDto.tipoAnestesia,
+      cuadranteinferiorder: createCrioterapiaDto.cuadranteinferiorder,
+      cuadranteinferiorizq: createCrioterapiaDto.cuadranteinferiorizq,
+      cuadrantesuperiorder: createCrioterapiaDto.cuadrantesuperiorder,
+      cuadrantesuperiorizq: createCrioterapiaDto.cuadrantesuperiorizq,
+      numeroCrioterapia: createCrioterapiaDto.numeroCrioterapia,
+      notascuadranteinferiorder: createCrioterapiaDto.notascuadranteinferiorder,
+      notascuadranteinferiorizq: createCrioterapiaDto.notascuadranteinferiorizq,
+      notascuadrantesuperiorder: createCrioterapiaDto.notascuadrantesuperiorder,
+      notascuadrantesuperiorizq: createCrioterapiaDto.notascuadrantesuperiorizq,
         notasCrioterapia: createCrioterapiaDto.notasCrioterapia,
         observaciones: createCrioterapiaDto.observaciones,
         paciente,
@@ -87,7 +94,7 @@ export class CrioterapiasService {
 
   async searchPatients(term: string): Promise<Crioterapia[]> {
     return this.crioterapiaRepository.createQueryBuilder('crioterapias')
-        .where('crioterapias.tipoAnestesia = :term OR crioterapias.notasCrioterapia= :term', { term })
+        .where('crioterapias.observaciones = :term OR crioterapias.notasCrioterapia= :term', { term })
         .getMany();
   }
 

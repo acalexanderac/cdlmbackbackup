@@ -45,7 +45,7 @@ export class PapanicolaousController {
     const builder: SelectQueryBuilder<Papanicolaous> = this.papanicolaousService.createQueryBuilder('papanicolaous');
 
     if (searchString) {
-      builder.where(' papanicolaous.resultadoPapanicolaous ILIKE :s  OR colposcopias.dpi ILIKE :s ', { s: `%${searchString}%` });
+      builder.where(' papanicolaous.resultadoPapanicolaous ILIKE :s  OR papanicolaous.dpi ILIKE :s ', { s: `%${searchString}%` });
     }
 
     if (sort) {
