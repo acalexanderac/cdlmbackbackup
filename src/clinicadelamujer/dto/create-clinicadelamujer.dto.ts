@@ -1,8 +1,8 @@
 import {  IsOptional, IsBoolean, IsString } from 'class-validator';
 
 export class CreateClinicadelamujerDto {
-  @IsString()
-  fechaClinicadelamujer: string;
+   @IsString()
+    fechaClinicadelamujer: string;
 
   @IsOptional()
   @IsString()
@@ -46,7 +46,7 @@ export class CreateClinicadelamujerDto {
 
   @IsOptional()
   @IsString()
-  fechaanticonceptivo: string;
+  fechaanticonceptivo: string | null = null;
 
   @IsOptional()
   @IsBoolean()
@@ -131,9 +131,10 @@ export class CreateClinicadelamujerDto {
   @IsString()
   procedimiento: string;
 
-  @IsOptional()
   @IsString()
-  fechaprocedimiento: string;
+   @IsOptional()
+    
+  fechaprocedimiento: string | null = null;
 
   @IsOptional()
   @IsString()

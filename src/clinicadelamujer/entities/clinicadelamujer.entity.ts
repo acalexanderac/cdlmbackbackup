@@ -14,7 +14,7 @@ export class Clinicadelamujer {
     @CreateDateColumn()
     fechaCreacion: Date;
 
-    @Column({type: "date" })
+     @Column({type: "date" })
     fechaClinicadelamujer: Date;
 
     @Column({ nullable: true })
@@ -47,8 +47,8 @@ export class Clinicadelamujer {
     @Column({ nullable: true })
     tipoanticonceptivo: string;
 
-    @Column({type: "date", nullable: true})
-    fechaanticonceptivo: Date;
+    @Column({type: "date" , nullable: true})
+    fechaanticonceptivo: Date | null;
 
     @Column({ nullable: true })
     medicina: boolean;
@@ -113,10 +113,10 @@ export class Clinicadelamujer {
     @Column({ nullable: true })
     procedimiento: string;
 
-    @Column({ nullable: true, type: 'date' })
-    fechaprocedimiento: Date;
+    @Column({type: "date" , nullable: true})
+    fechaprocedimiento: Date | null ;
 
-    @Column({ nullable: true, type: 'time' })
+    @Column({ nullable: true })
     horaprocedimiento: string;
 
     @Column({ nullable: true })

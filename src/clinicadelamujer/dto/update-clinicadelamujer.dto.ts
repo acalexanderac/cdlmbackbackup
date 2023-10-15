@@ -3,10 +3,11 @@ import { CreateClinicadelamujerDto } from './create-clinicadelamujer.dto';
 import { IsOptional, IsBoolean, IsString } from 'class-validator';
 
 export class UpdateClinicadelamujerDto extends PartialType(CreateClinicadelamujerDto) {
-     @IsOptional()
+@IsOptional()
   @IsString()
-  fechaClinicadelamujer: string;
-
+fechaClinicadelamujer: string;
+  
+  
   @IsOptional()
   @IsString()
   antefamiliar: string;
@@ -135,8 +136,8 @@ export class UpdateClinicadelamujerDto extends PartialType(CreateClinicadelamuje
   @IsString()
   procedimiento: string;
 
-  @IsOptional()
   @IsString()
+   @IsOptional()
   fechaprocedimiento: string;
 
   @IsOptional()
