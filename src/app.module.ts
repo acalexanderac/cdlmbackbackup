@@ -10,6 +10,7 @@ import { ColposcopiasModule } from './colposcopias/colposcopias.module';
 import { PapanicolaousModule } from './papanicolaous/papanicolaous.module';
 import { PostoperacionesModule } from './postoperaciones/postoperaciones.module';
 import { ClinicadelamujerModule } from './clinicadelamujer/clinicadelamujer.module';
+import { ControlnatalModule } from './controlnatal/controlnatal.module';
 
 
 @Module({
@@ -39,6 +40,7 @@ import { ClinicadelamujerModule } from './clinicadelamujer/clinicadelamujer.modu
     PapanicolaousModule,
     PostoperacionesModule,
     ClinicadelamujerModule,
+    ControlnatalModule,
   ],
   controllers: [],
   providers: [],
