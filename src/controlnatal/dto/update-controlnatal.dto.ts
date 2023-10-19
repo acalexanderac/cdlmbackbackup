@@ -105,6 +105,10 @@ export class UpdateControlnatalDto extends PartialType(CreateControlnatalDto) {
     
     @IsOptional()
     @IsString()
+    vaginales: string
+
+    @IsOptional()
+    @IsString()
     cesareas: string;
 
     @IsOptional()

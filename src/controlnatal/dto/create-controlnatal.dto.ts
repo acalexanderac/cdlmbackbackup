@@ -98,6 +98,10 @@ export class CreateControlnatalDto {
     @IsOptional()
     @IsString()
     partos: string
+
+    @IsOptional()
+    @IsString()
+    vaginales: string
     
     @IsOptional()
     @IsString()

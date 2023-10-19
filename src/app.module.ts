@@ -11,6 +11,7 @@ import { PapanicolaousModule } from './papanicolaous/papanicolaous.module';
 import { PostoperacionesModule } from './postoperaciones/postoperaciones.module';
 import { ClinicadelamujerModule } from './clinicadelamujer/clinicadelamujer.module';
 import { ControlnatalModule } from './controlnatal/controlnatal.module';
+import { ConsultaexternaModule } from './consultaexterna/consultaexterna.module';
 
 
 @Module({
@@ -41,6 +42,7 @@ import { ControlnatalModule } from './controlnatal/controlnatal.module';
     PostoperacionesModule,
     ClinicadelamujerModule,
     ControlnatalModule,
+    ConsultaexternaModule,
   ],
   controllers: [],
   providers: [],

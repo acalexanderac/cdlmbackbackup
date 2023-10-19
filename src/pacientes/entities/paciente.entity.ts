@@ -5,6 +5,7 @@ import { Papanicolaous } from "src/papanicolaous/entities/papanicolaous.entity";
 import { Postoperacione } from "src/postoperaciones/entities/postoperacione.entity";
 import { Clinicadelamujer } from "src/clinicadelamujer/entities/clinicadelamujer.entity";
 import { Controlnatal } from "src/controlnatal/entities/controlnatal.entity";
+import { Consultaexterna } from "src/consultaexterna/entities/consultaexterna.entity";
 @Entity()
 export class Paciente {
     @Column({ primary: true, generated: true })
@@ -83,6 +84,9 @@ export class Paciente {
 
     @OneToMany(() => Controlnatal, (controlnatal) => controlnatal.paciente)
 controlnatal: Controlnatal[];
+
+@OneToMany(() => Consultaexterna, (consultaexterna) => consultaexterna.paciente)
+consultaexterna: Consultaexterna[];
     
 }
 

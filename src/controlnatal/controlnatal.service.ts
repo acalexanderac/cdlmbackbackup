@@ -57,6 +57,7 @@ export class ControlnatalService {
       RNmenor2500: createControlnatalDto.RNmenor2500,
       gemelares: createControlnatalDto.gemelares,
       partos: createControlnatalDto.partos,
+      vaginales: createControlnatalDto.vaginales,
       cesareas: createControlnatalDto.cesareas,
       nacidosvivos: createControlnatalDto.nacidosvivos,
       nacidosmuertos: createControlnatalDto.nacidosmuertos,

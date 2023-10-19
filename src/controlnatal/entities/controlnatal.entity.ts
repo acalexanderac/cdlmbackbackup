@@ -93,6 +93,9 @@ export class Controlnatal {
     @Column({ nullable: true })
     partos: string;
 
+     @Column({ nullable: true })
+    vaginales: string;
+
     @Column({ nullable: true })
     cesareas: string;
 
@@ -156,8 +159,8 @@ export class Controlnatal {
     @Column({ nullable: true })
     fpp: string;
 
-     @Column({type: "date", nullable: true})
-     fecharegistro: Date;
+    @Column({type: "date", nullable: true})
+    fecharegistro: Date;
     
     @Column({ nullable: true })
     valseg: string;
