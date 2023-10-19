@@ -47,8 +47,25 @@ export class CreateConsultaexternaDto {
   @IsBoolean()
   accidentesrelevantes: boolean;
 
-  @IsOptional()
+   @IsOptional()
+  @IsString()
   otroantecedentetra: string;
+
+  @IsOptional()
+  @IsString()
+    añosmenarquia: string;
+
+     @IsOptional()
+  @IsString()
+    ciclos: string;
+
+    @IsOptional()
+  @IsString()
+    duraciondias: string;
+    
+   @IsOptional()
+  @IsString()
+    menopausiaanios: string;
 
   @IsOptional()
   @IsString()

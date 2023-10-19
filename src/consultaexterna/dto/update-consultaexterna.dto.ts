@@ -54,6 +54,22 @@ export class UpdateConsultaexternaDto extends PartialType(CreateConsultaexternaD
 
   @IsOptional()
   @IsString()
+    añosmenarquia: string;
+
+     @IsOptional()
+  @IsString()
+    ciclos: string;
+
+    @IsOptional()
+  @IsString()
+    duraciondias: string;
+    
+   @IsOptional()
+  @IsString()
+    menopausiaanios: string;
+
+  @IsOptional()
+  @IsString()
   fechaRegla1: string;
 
   @IsOptional()
