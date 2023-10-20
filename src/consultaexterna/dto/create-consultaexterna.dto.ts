@@ -76,27 +76,27 @@ export class CreateConsultaexternaDto {
   fechaRegla2: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   g: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   p: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   ab: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   c: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   hv: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   hm: string;
 
   @IsOptional()
@@ -104,6 +104,7 @@ export class CreateConsultaexternaDto {
   anticonceptivo: boolean;
 
   @IsOptional()
+  @IsString()
   tipoanticonceptivo: string;
 
   @IsOptional()
@@ -111,27 +112,35 @@ export class CreateConsultaexternaDto {
   fechaanticonceptivo: string | null;
 
   @IsOptional()
+  @IsString()
   motivoconsulta: string;
 
   @IsOptional()
+  @IsString()
   historiaenfermedad: string;
 
   @IsOptional()
+  @IsString()
   pa: string;
 
   @IsOptional()
+  @IsString()
   pfisico: string;
 
   @IsOptional()
+  @IsString()
   t: string;
 
   @IsOptional()
+  @IsString()
   resp: string;
 
   @IsOptional()
+  @IsString()
   peso: string;
 
   @IsOptional()
+  @IsString()
   talla: string;
 
   @IsOptional()
@@ -143,6 +152,7 @@ export class CreateConsultaexternaDto {
   tiroidesanormal: boolean;
 
   @IsOptional()
+  @IsString()
   tiroides: string;
 
   @IsOptional()
@@ -154,6 +164,7 @@ export class CreateConsultaexternaDto {
   mamasanormal: boolean;
 
   @IsOptional()
+  @IsString()
   mamas: string;
 
   @IsOptional()
@@ -165,6 +176,7 @@ export class CreateConsultaexternaDto {
   cardiopulmonaranormal: boolean;
 
   @IsOptional()
+  @IsString()
   cardiopulmonar: string;
 
   @IsOptional()
@@ -176,6 +188,7 @@ export class CreateConsultaexternaDto {
   mucosasanormal: boolean;
 
   @IsOptional()
+  @IsString()
   mucosas: string;
 
   @IsOptional()
@@ -187,6 +200,7 @@ export class CreateConsultaexternaDto {
   flujoanormal: boolean;
 
   @IsOptional()
+  @IsString()
   flujo: string;
 
   @IsOptional()
@@ -198,6 +212,7 @@ export class CreateConsultaexternaDto {
   labiosmenoresanormal: boolean;
 
   @IsOptional()
+  @IsString()
   labiosmenores: string;
 
   @IsOptional()
@@ -209,6 +224,7 @@ export class CreateConsultaexternaDto {
   labiosmayoresanormal: boolean;
 
   @IsOptional()
+  @IsString()
   labiosmayores: string;
 
   @IsOptional()
@@ -220,6 +236,7 @@ export class CreateConsultaexternaDto {
   aparatourinarioanormal: boolean;
 
   @IsOptional()
+  @IsString()
   aparatourinario: string;
 
   @IsOptional()
@@ -231,6 +248,7 @@ export class CreateConsultaexternaDto {
   fondodesacoanormal: boolean;
 
   @IsOptional()
+  @IsString()
   fondodesaco: string;
 
   @IsOptional()
@@ -242,6 +260,7 @@ export class CreateConsultaexternaDto {
   cupulavaginalanormal: boolean;
 
   @IsOptional()
+  @IsString()
   cupulavaginal: string;
 
   @IsOptional()
@@ -293,75 +312,99 @@ export class CreateConsultaexternaDto {
   prolapso4: boolean;
 
   @IsOptional()
+  @IsString()
   formacervix: string;
 
   @IsOptional()
+  @IsString()
   consistenciacervix: string;
 
   @IsOptional()
+  @IsString()
   tumoracionescervix: string;
 
   @IsOptional()
+  @IsString()
   ulceracionescervix: string;
 
   @IsOptional()
+  @IsString()
   otroscervix: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinotamano: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinoposicion: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinoconsistencia: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinomovilidad: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinoforma: string;
 
   @IsOptional()
+  @IsString()
   cuerpouterinootros: string;
 
   @IsOptional()
+  @IsString()
   anexosizquierdo: string;
 
   @IsOptional()
+  @IsString()
   anexosderecho: string;
 
   @IsOptional()
+  @IsString()
   anexosotros: string;
 
   @IsOptional()
+  @IsString()
   hb: string;
 
   @IsOptional()
+    @IsString()
   ht: string;
 
   @IsOptional()
+    @IsString()
   tp: string;
 
   @IsOptional()
+    @IsString()
   tpt: string;
 
   @IsOptional()
+  @IsString()
   glicemia: string;
 
   @IsOptional()
+    @IsString()
   inr: string;
 
   @IsOptional()
+    @IsString()
   vdrl: string;
 
   @IsOptional()
+    @IsString()
   hiv: string;
 
   @IsOptional()
+    @IsString()
   grupo: string;
 
   @IsOptional()
+    @IsString()
   rh: string;
 
   @IsOptional()
@@ -369,9 +412,11 @@ export class CreateConsultaexternaDto {
   fechaorina: string;
 
   @IsOptional()
+    @IsString()
   orinaresultado: string;
 
   @IsOptional()
+    @IsString()
   orinatratamiento: string;
 
   @IsOptional()
@@ -379,9 +424,11 @@ export class CreateConsultaexternaDto {
   fechaekg: string;
 
   @IsOptional()
+    @IsString()
   ekgresultado: string;
 
   @IsOptional()
+    @IsString()
   ekgtratamiento: string;
 
   @IsOptional()
@@ -389,9 +436,11 @@ export class CreateConsultaexternaDto {
   fechausg: string;
 
   @IsOptional()
+    @IsString()
   usgresultado: string;
 
   @IsOptional()
+    @IsString()
   usgtratamiento: string;
 
   @IsOptional()
@@ -399,9 +448,11 @@ export class CreateConsultaexternaDto {
   fechapapanicolaou: string;
 
   @IsOptional()
+    @IsString()
   papanicolaouresultado: string;
 
   @IsOptional()
+    @IsString()
   papanicolaoutratamiento: string;
 
   @IsOptional()
@@ -409,9 +460,11 @@ export class CreateConsultaexternaDto {
   fechacolposcopia: string;
 
   @IsOptional()
+    @IsString()
   colposcopiaresultado: string;
 
   @IsOptional()
+    @IsString()
   colposcopiatratamiento: string;
 
   @IsOptional()
@@ -419,12 +472,15 @@ export class CreateConsultaexternaDto {
   fecharx: string;
 
   @IsOptional()
+    @IsString()
   rxresultado: string;
 
   @IsOptional()
+    @IsString()
   rxtratamiento: string;
 
   @IsOptional()
+    @IsString()
   stringotro1: string;
 
   @IsOptional()
@@ -432,12 +488,15 @@ export class CreateConsultaexternaDto {
   fechaotro1: string;
 
   @IsOptional()
+    @IsString()
   otroresultado1: string;
 
   @IsOptional()
+    @IsString()
   otrotratamiento1: string;
 
   @IsOptional()
+  @IsString()
   stringotro2: string;
 
   @IsOptional()
@@ -445,24 +504,31 @@ export class CreateConsultaexternaDto {
   fechaotro2: string;
 
   @IsOptional()
+    @IsString()
   otroresultado2: string;
 
   @IsOptional()
+    @IsString()
   otrotratamiento2: string;
 
   @IsOptional()
+    @IsString()
   c1: string;
 
   @IsOptional()
+    @IsString()
   c2: string;
 
   @IsOptional()
+    @IsString()
   c3: string;
 
   @IsOptional()
+    @IsString()
   c4: string;
 
   @IsOptional()
+    @IsString()
   planterapeutico: string;
 
   @IsOptional()
@@ -470,9 +536,11 @@ export class CreateConsultaexternaDto {
   fecharegistro: string;
 
   @IsOptional()
+    @IsString()
   valseg: string;
 
   @IsOptional()
+    @IsString()
   ri: string;
 
   @IsOptional()
@@ -523,7 +591,7 @@ export class CreateConsultaexternaDto {
   @IsBoolean()
   an_pareja: boolean;
     
-    @IsString()
+  @IsString()
     dpi: string;
     
    @IsString()
