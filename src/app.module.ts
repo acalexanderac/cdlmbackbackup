@@ -12,6 +12,7 @@ import { PostoperacionesModule } from './postoperaciones/postoperaciones.module'
 import { ClinicadelamujerModule } from './clinicadelamujer/clinicadelamujer.module';
 import { ControlnatalModule } from './controlnatal/controlnatal.module';
 import { ConsultaexternaModule } from './consultaexterna/consultaexterna.module';
+import { CitasModule } from './citas/citas.module';
 
 
 @Module({
@@ -43,6 +44,7 @@ import { ConsultaexternaModule } from './consultaexterna/consultaexterna.module'
     ClinicadelamujerModule,
     ControlnatalModule,
     ConsultaexternaModule,
+    CitasModule,
   ],
   controllers: [],
   providers: [],
