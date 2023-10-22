@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } from '@nestjs/common';
 import { CitasService } from './citas.service';
 import { CreateCitaDto } from './dto/create-cita.dto';
 import { UpdateCitaDto } from './dto/update-cita.dto';
 import { SelectQueryBuilder } from 'typeorm';
 import { Cita } from './entities/cita.entity';
+import { Response } from 'express';
+
 
 @Controller('citas')
 export class CitasController {
@@ -74,7 +76,15 @@ export class CitasController {
     };
   }
 
+@Get('report')
+async generateReport(@Res() res: Response) {
+  await this.citasService.generateReport();
+  const fileName = 'citasactuales.xlsx'; // Specify the desired file name
+  res.sendFile(fileName, { root: '.' });
+}
+  
 
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.citasService.findOne(+id);

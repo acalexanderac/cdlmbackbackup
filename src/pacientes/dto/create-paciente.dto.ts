@@ -1,4 +1,4 @@
-import { IsString, IsPositive, IsOptional, MaxLength, IsInt  } from "class-validator";
+import { IsString, IsOptional, MaxLength, IsInt, IsPositive  } from "class-validator";
 
 export class CreatePacienteDto {
 
@@ -9,7 +9,7 @@ export class CreatePacienteDto {
     @MaxLength(13)
     docIdentificacion: string;
 
-    @IsInt()
+ @IsInt()
     @IsPositive()
     @IsOptional()
 

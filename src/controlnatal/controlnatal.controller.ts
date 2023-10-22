@@ -74,9 +74,16 @@ export class ControlnatalController {
     };
   }
 
+  
+
+
+   @Get('report')
+  async generateReport(): Promise<void> {
+    await this.controlnatalService.generateReport();
+   }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.controlnatalService.findOne(+id);
   }
-
 }

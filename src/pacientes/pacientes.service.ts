@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Paciente} from "./entities/paciente.entity";
-
+import * as XLSX from 'xlsx';
 import {CreatePacienteDto} from "./dto/create-paciente.dto";
 import {UpdatePacienteDto} from "./dto/update-paciente.dto";
-
+import * as path from 'path';
+import * as os from 'os';
 
 @Injectable()
 export class PacientesService {
@@ -27,12 +27,14 @@ export class PacientesService {
     const newPatient = this.pacienteRepository.create(createPacienteDto);
     return await this.pacienteRepository.save(newPatient);
   }
-  async findOne(id: number) {
-    return await this.pacienteRepository.findOneBy({ id });
-  }
+  
 
   async findAll() {
     return await this.pacienteRepository.find();
+  }
+
+  async findOne(id: number) {
+    return await this.pacienteRepository.findOneBy({ id });
   }
 
   async findPaginated(page: number = 1, pageSize: number = 4) {
@@ -73,4 +75,56 @@ export class PacientesService {
   createQueryBuilder(alias: string): SelectQueryBuilder<Paciente> {
     return this.pacienteRepository.createQueryBuilder(alias);
   }
+
+async generateReport(): Promise<void> {
+  const pacientes = await this.pacienteRepository.find();
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(pacientes, {
+    header: [
+      'id',
+      'nombrePaciente',
+      'docIdentificacion',
+      'edadPaciente',
+      'direccion',
+      'estadoCivil',
+      'noIggs',
+      'aseguradora',
+      'telefonoContacto',
+      'religion',
+      'borradoFecha',
+      'fechaNacimiento',
+      'contacto1',
+      'contacto2',
+      'telContacto1',
+      'telContacto2',
+      'fechaCreacion',
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 5 },
+    { width: 35 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Pacientes');
+  XLSX.writeFile(workbookXLSX, path.join(os.homedir(), 'Documents', 'pacientesActuales.xlsx'));
+
+
+}
 }

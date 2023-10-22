@@ -29,11 +29,13 @@ export class Cita {
     @Column({ nullable: false })
     dpi: string;
 
-    @Column({ type: "time" })
-    horaAgendado: string;
+    @Column({ type: 'time without time zone' })
+horaAgendado: string;
     
 @ManyToOne(() => Paciente, (paciente) => paciente.cita, {
     eager: true,
     })
-    paciente: Paciente;
+paciente: Paciente;
+    
+
 }

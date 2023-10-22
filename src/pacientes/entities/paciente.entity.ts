@@ -1,4 +1,4 @@
-import {Column, Entity, DeleteDateColumn, CreateDateColumn, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
+import {Column, Entity, DeleteDateColumn, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate} from "typeorm";
 import {Crioterapia} from "../../crioterapias/entities/crioterapia.entity";
 import { Colposcopia } from "src/colposcopias/entities/colposcopia.entity";
 import { Papanicolaous } from "src/papanicolaous/entities/papanicolaous.entity";
@@ -23,6 +23,7 @@ export class Paciente {
 
     @Column({nullable: true})
     edadPaciente: number;
+
 
     @Column({ nullable: true })
     direccion: string;
@@ -59,7 +60,8 @@ export class Paciente {
 
     @Column({ nullable: true })
     telContacto2:string;
-    @BeforeInsert()
+    
+@BeforeInsert()
     @BeforeUpdate()
     calculateAge() {
         const birthDate = new Date(this.fechaNacimiento);
@@ -67,6 +69,8 @@ export class Paciente {
         const ageInMillis = currentDate.getTime() - birthDate.getTime();
         this.edadPaciente = Math.floor(ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
     }
+
+
 
     @OneToMany(() => Crioterapia, (crioterapia) => crioterapia.paciente) // Define the OneToMany relationship
     crioterapia: Crioterapia[]; // Define the 'treatments' property
