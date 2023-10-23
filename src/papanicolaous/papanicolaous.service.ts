@@ -3,8 +3,10 @@ import { CreatePapanicolaousDto } from './dto/create-papanicolaous.dto';
 import { UpdatePapanicolaousDto } from './dto/update-papanicolaous.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Papanicolaous } from './entities/papanicolaous.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder, Between } from 'typeorm';
 import { Paciente } from 'src/pacientes/entities/paciente.entity';
+import * as XLSX from 'xlsx';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 
 @Injectable()
 export class PapanicolaousService {
@@ -92,4 +94,130 @@ export class PapanicolaousService {
   createQueryBuilder(alias: string): SelectQueryBuilder<Papanicolaous> {
     return this.papanicolaousRepository.createQueryBuilder(alias);
   }
+
+ async generateReport(): Promise<Buffer> {
+  const papanicolaous = await this.papanicolaousRepository.find();
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(papanicolaous, {
+     header: [
+      'id',
+      'fechaCreacion',
+      'dpi',
+      'observaciones',
+      'resultadoPapanicolaous',
+      'fechaPapanicolaous',
+      'borradoFecha',
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Papanicolaouss');
+
+    // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+  
+  async generateReportMensuales(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfMonth = startOfMonth(today);
+  const lastDayOfMonth = endOfMonth(today);
+
+  const papanicolaous = await this.papanicolaousRepository.find({
+    where: {
+      fechaPapanicolaous: Between(firstDayOfMonth, lastDayOfMonth),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(papanicolaous, {
+     header: [
+      'id',
+      'fechaCreacion',
+      'dpi',
+      'observaciones',
+      'resultadoPapanicolaous',
+      'fechaPapanicolaous',
+      'borradoFecha',
+
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 }
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Papanicolaouss');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+} 
+
+  
+async generateReportSemanal(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfWeek = startOfWeek(today);
+  const lastDayOfWeek = endOfWeek(today);
+
+  const papanicolaous = await this.papanicolaousRepository.find({
+    where: {
+      fechaPapanicolaous: Between(firstDayOfWeek, lastDayOfWeek),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(papanicolaous, {
+         header: [
+      'id',
+      'dpi',
+      'fechaCreacion',
+      'observaciones',
+      'resultadoPapanicolaous',
+      'fechaPapanicolaous',
+      'borradoFecha',
+
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Papanicolaouss');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+
+
 }

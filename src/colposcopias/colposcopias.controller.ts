@@ -1,10 +1,12 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, Query, Req} from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res} from '@nestjs/common';
 import { ColposcopiasService } from './colposcopias.service';
 import { CreateColposcopiaDto } from './dto/create-colposcopia.dto';
 import { UpdateColposcopiaDto } from './dto/update-colposcopia.dto';
 import {Request} from "express";
 import { SelectQueryBuilder } from "typeorm";
 import { Colposcopia } from './entities/colposcopia.entity';
+import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 @Controller('colposcopias')
 export class ColposcopiasController {
   constructor(private readonly colposcopiasService: ColposcopiasService) {}
@@ -74,6 +76,61 @@ export class ColposcopiasController {
     };
   }
 
+
+  @Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const colposcopiasData = await this.colposcopiasService.generateReport(); // Llamar al servicio para obtener los datos del informe
+
+  if (colposcopiasData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `ColposcopiasdelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(colposcopiasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const colposcopiasData = await this.colposcopiasService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (colposcopiasData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `ColposcopiasdelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(colposcopiasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const colposcopiasData = await this.colposcopiasService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (colposcopiasData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `ColposcopiasdelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(colposcopiasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
 
 
   @Get(':id')

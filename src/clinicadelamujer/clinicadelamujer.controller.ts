@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res } from '@nestjs/common';
 import { ClinicadelamujerService } from './clinicadelamujer.service';
 import { CreateClinicadelamujerDto } from './dto/create-clinicadelamujer.dto';
 import { UpdateClinicadelamujerDto } from './dto/update-clinicadelamujer.dto';
 import { Clinicadelamujer } from './entities/clinicadelamujer.entity';
 import { SelectQueryBuilder } from 'typeorm';
-
+import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 @Controller('clinicadelamujer')
 export class ClinicadelamujerController {
   constructor(private readonly clinicadelamujerService: ClinicadelamujerService) {}
@@ -73,6 +74,64 @@ export class ClinicadelamujerController {
       last_page,
     };
   }
+
+@Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const clinicadelamujerData = await this.clinicadelamujerService.generateReport(); // Llamar al servicio para obtener los datos del informe
+
+  if (clinicadelamujerData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `ClinicadelaMujerdelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(clinicadelamujerData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const clinicadelamujerData = await this.clinicadelamujerService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (clinicadelamujerData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `ClinicadelaMujerdelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(clinicadelamujerData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const clinicadelamujerData = await this.clinicadelamujerService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (clinicadelamujerData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `ClinicadelaMujerdelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(clinicadelamujerData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+
+
 
    @Get(':id')
   findOne(@Param('id') id: string) {

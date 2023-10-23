@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PostoperacionesService } from './postoperaciones.service';
+import { PostoperacioneService } from './postoperaciones.service';
 import { PostoperacionesController } from './postoperaciones.controller';
 import { Postoperacione } from './entities/postoperacione.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +10,6 @@ import { PacientesService } from 'src/pacientes/pacientes.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Postoperacione]), AuthModule, PacientesModule],
   controllers: [PostoperacionesController],
-  providers: [PostoperacionesService, PacientesService],
+  providers: [PostoperacioneService, PacientesService],
 })
 export class PostoperacionesModule {}

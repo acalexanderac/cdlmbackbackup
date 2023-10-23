@@ -4,9 +4,9 @@ import { UpdateControlnatalDto } from './dto/update-controlnatal.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Controlnatal } from './entities/controlnatal.entity';
 import { Paciente } from 'src/pacientes/entities/paciente.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { createObjectCsvWriter } from 'csv-writer';
-
+import { Repository, SelectQueryBuilder, Between } from 'typeorm';
+import * as XLSX from 'xlsx';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 @Injectable()
 export class ControlnatalService {
   constructor(
@@ -152,153 +152,324 @@ export class ControlnatalService {
     return this.controlnatalRepository.createQueryBuilder(alias);
   }
 
-async generateReport(): Promise<void> {
-    const controlnatal = await this.controlnatalRepository.find({ relations: ['paciente'] });
+  async generateReport(): Promise<Buffer> {
+  const controlnatal = await this.controlnatalRepository.find();
 
-    // Using csv-writer library to generate CSV file
-    const csvWriter = createObjectCsvWriter({
-      path: 'controlnatal.csv',
-      header: [
-        { id: 'id', title: 'ID' },
-        { id: 'fechaControlnatal', title: 'Fecha de Control Natal' },
-        { id: 'diabetespersonal', title: 'Diabetes Personal' },
-        { id: 'hipertension', title: 'Hipertensión' },
-        { id: 'infertilidad', title: 'Infertilidad' },
-        { id: 'sxconvulsivo', title: 'Sx Convulsivo' },
-        { id: 'nefropatia', title: 'Nefropatía' },
-        { id: 'cardiopatia', title: 'Cardiopatía' },
-        { id: 'otropersonal', title: 'Otro Personal' },
-        { id: 'diabetesfamiliar', title: 'Diabetes Familiar' },
-        { id: 'embarazogemelar', title: 'Embarazo Gemelar' },
-        { id: 'anomaliascongenitas', title: 'Anomalías Congénitas' },
-        { id: 'hipertensionarterial', title: 'Hipertensión Arterial' },
-        { id: 'otrofamiliar', title: 'Otro Familiar' },
-        { id: 'antecedentesquirurgicos', title: 'Antecedentes Quirúrgicos' },
-        { id: 'otrosquirurgicos', title: 'Otros Quirúrgicos' },
-        { id: 'antecedentestraumaticos', title: 'Antecedentes Traumáticos' },
-        { id: 'otrostraumaticos', title: 'Otros Traumáticos' },
-        { id: 'antecedentesalergicos', title: 'Antecedentes Alergicos' },
-        { id: 'otrosalergicos', title: 'Otros Alergicos' },
-        { id: 'gestas', title: 'Gestas' },
-        { id: 'abortos', title: 'Abortos' },
-        { id: 'ningunoMas3partos', title: 'Ninguno Más de 3 Partos' },
-        { id: 'RNmenor2500', title: 'RN Menor a 2500g' },
-        { id: 'gemelares', title: 'Gemelares' },
-        { id: 'partos', title: 'Partos' },
-        { id: 'vaginales', title: 'Vaginales' },
-        { id: 'cesareas', title: 'Cesáreas' },
-        { id: 'nacidosvivos', title: 'Nacidos Vivos' },
-        { id: 'nacidosmuertos', title: 'Nacidos Muertos' },
-        { id: 'viven', title: 'Viven' },
-        { id: 'muertos1semana', title: 'Muertos en la Primera Semana' },
-        { id: 'muertosdespues1semana', title: 'Muertos Después de la Primera Semana' },
-        { id: 'fechaUltimoembarazo', title: 'Fecha del Último Embarazo' },
-        { id: 'RNpesomenor5lbs', title: 'RN Peso Menor a 5lbs' },
-        { id: 'RNpesomayor8lbs', title: 'RN Peso Mayor a 8lbs' },
-        { id: 'RNconmayorpeso', title: 'RN con Mayor Peso' },
-        { id: 'embarazoActual', title: 'Embarazo Actual' },
-        { id: 'confiable', title: 'Confiable' },
-        { id: 'antitetanica', title: 'Antitetánica' },
-        { id: 'hospitalizacion', title: 'Hospitalización' },
-        { id: 'motivoHospitalizacion', title: 'Motivo de Hospitalización' },
-        { id: 'fechaHospitalizacion', title: 'Fecha de Hospitalización' },
-        { id: 'fuma', title: 'Fuma' },
-        { id: 'pesoanterior', title: 'Peso Anterior' },
-        { id: 'talla', title: 'Talla' },
-        { id: 'fur', title: 'FUR' },
-        { id: 'fpp', title: 'FPP' },
-        { id: 'fecharegistro', title: 'Fecha de Registro' },
-        { id: 'valseg', title: 'Val. Seg.' },
-        { id: 'ri', title: 'RI' },
-        { id: 'psalgunavez', title: 'PS Alguna Vez' },
-        { id: 'psultimos12meses', title: 'PS Últimos 12 Meses' },
-        { id: 'pspareja', title: 'PS Pareja' },
-        { id: 'fialgunavez', title: 'FI Alguna Vez' },
-        { id: 'fiultimos12meses', title: 'FI Últimos 12 Meses' },
-        { id: 'fipareja', title: 'FI Pareja' },
-        { id: 'sxalgunavez', title: 'SX Alguna Vez' },
-        { id: 'sxultimos12meses', title: 'SX Últimos 12 Meses' },
-        { id: 'sxpareja', title: 'SX Pareja' },
-        { id: 'an_algunavez', title: 'AN Alguna Vez' },
-        { id: 'an_ultimos12meses', title: 'AN Últimos 12 Meses' },
-        { id: 'an_pareja', title: 'AN Pareja' },
-        { id: 'dpi', title: 'DPI' },
-        { id: 'pacienteId', title: 'ID del Paciente' },
-        { id: 'pacienteNombre', title: 'Nombre del Paciente' },
-        { id: 'pacienteFechaNacimiento', title: 'Fecha de Nacimiento del Paciente' },
-      ],
-    });
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(controlnatal, {
+     header: [
+      'id',
+  'dpi',
+  'fechaControlnatal',
+  'diabetespersonal',
+  'hipertension',
+  'infertilidad',
+  'sxconvulsivo',
+  'nefropatia',
+  'cardiopatia',
+  'otropersonal',
+  'diabetesfamiliar',
+  'embarazogemelar',
+  'anomaliascongenitas',
+  'hipertensionarterial',
+  'otrofamiliar',
+  'antecedentesquirurgicos',
+  'otrosquirurgicos',
+  'antecedentestraumaticos',
+  'otrostraumaticos',
+  'antecedentesalergicos',
+  'otrosalergicos',
+  'gestas',
+  'abortos',
+  'ningunoMas3partos',
+  'RNmenor2500',
+  'gemelares',
+  'partos',
+  'vaginales',
+  'cesareas',
+  'nacidosvivos',
+  'nacidosmuertos',
+  'viven',
+  'muertos1semana',
+  'muertosdespues1semana',
+  'fechaUltimoembarazo',
+  'RNpesomenor5lbs',
+  'RNpesomayor8lbs',
+  'RNconmayorpeso',
+  'embarazoActual',
+  'confiable',
+  'antitetanica',
+  'hospitalizacion',
+  'motivoHospitalizacion',
+  'fechaHospitalizacion',
+  'fuma',
+  'pesoanterior',
+  'talla',
+  'fur',
+  'fpp',
+  'fecharegistro',
+  'valseg',
+  'ri',
+  'psalgunavez',
+  'psultimos12meses',
+  'pspareja',
+  'fialgunavez',
+  'fiultimos12meses',
+  'fipareja',
+  'sxalgunavez',
+  'sxultimos12meses',
+  'sxpareja',
+  'an_algunavez',
+  'an_ultimos12meses',
+  'an_pareja',
+  'fechaCreacion',
+  'borradoFecha',
+],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Controlnatal');
 
-    const records = controlnatal.map((cn) => ({
-      id: cn.id,
-      fechaControlnatal: cn.fechaControlnatal,
-      diabetespersonal: cn.diabetespersonal,
-      hipertension: cn.hipertension,
-      infertilidad: cn.infertilidad,
-      sxconvulsivo: cn.sxconvulsivo,
-      nefropatia: cn.nefropatia,
-      cardiopatia: cn.cardiopatia,
-      otropersonal: cn.otropersonal,
-      diabetesfamiliar: cn.diabetesfamiliar,
-      embarazogemelar: cn.embarazogemelar,
-      anomaliascongenitas: cn.anomaliascongenitas,
-      hipertensionarterial: cn.hipertensionarterial,
-      otrofamiliar: cn.otrofamiliar,
-      antecedentesquirurgicos: cn.antecedentesquirurgicos,
-      otrosquirurgicos: cn.otrosquirurgicos,
-      antecedentestraumaticos: cn.antecedentestraumaticos,
-      otrostraumaticos: cn.otrostraumaticos,
-      antecedentesalergicos: cn.antecedentesalergicos,
-      otrosalergicos: cn.otrosalergicos,
-      gestas: cn.gestas,
-      abortos: cn.abortos,
-      ningunoMas3partos: cn.ningunoMas3partos,
-      RNmenor2500: cn.RNmenor2500,
-      gemelares: cn.gemelares,
-      partos: cn.partos,
-      vaginales: cn.vaginales,
-      cesareas: cn.cesareas,
-      nacidosvivos: cn.nacidosvivos,
-      nacidosmuertos: cn.nacidosmuertos,
-      viven: cn.viven,
-      muertos1semana: cn.muertos1semana,
-      muertosdespues1semana: cn.muertosdespues1semana,
-      fechaUltimoembarazo: cn.fechaUltimoembarazo,
-      RNpesomenor5lbs: cn.RNpesomenor5lbs,
-      RNpesomayor8lbs: cn.RNpesomayor8lbs,
-      RNconmayorpeso: cn.RNconmayorpeso,
-      embarazoActual: cn.embarazoActual,
-      confiable: cn.confiable,
-      antitetanica: cn.antitetanica,
-      hospitalizacion: cn.hospitalizacion,
-      motivoHospitalizacion: cn.motivoHospitalizacion,
-      fechaHospitalizacion: cn.fechaHospitalizacion,
-      fuma: cn.fuma,
-      pesoanterior: cn.pesoanterior,
-      talla: cn.talla,
-      fur: cn.fur,
-      fpp: cn.fpp,
-      fecharegistro: cn.fecharegistro,
-      valseg: cn.valseg,
-      ri: cn.ri,
-      psalgunavez: cn.psalgunavez,
-      psultimos12meses: cn.psultimos12meses,
-      pspareja: cn.pspareja,
-      fialgunavez: cn.fialgunavez,
-      fiultimos12meses: cn.fiultimos12meses,
-      fipareja: cn.fipareja,
-      sxalgunavez: cn.sxalgunavez,
-      sxultimos12meses: cn.sxultimos12meses,
-      sxpareja: cn.sxpareja,
-      an_algunavez: cn.an_algunavez,
-      an_ultimos12meses: cn.an_ultimos12meses,
-      an_pareja: cn.an_pareja,
-      dpi: cn.dpi,
-      pacienteId: cn.paciente.id,
-      pacienteNombre: cn.paciente.nombrePaciente,
-      pacienteFechaNacimiento: cn.paciente.fechaNacimiento,
-    }));
+    // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+  
+  async generateReportMensuales(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfMonth = startOfMonth(today);
+  const lastDayOfMonth = endOfMonth(today);
 
-    await csvWriter.writeRecords(records);
-  }
+  const controlnatal = await this.controlnatalRepository.find({
+    where: {
+      fechaControlnatal: Between(firstDayOfMonth, lastDayOfMonth),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(controlnatal, {
+    header: [
+      'id',
+  'dpi',
+  'fechaControlnatal',
+  'diabetespersonal',
+  'hipertension',
+  'infertilidad',
+  'sxconvulsivo',
+  'nefropatia',
+  'cardiopatia',
+  'otropersonal',
+  'diabetesfamiliar',
+  'embarazogemelar',
+  'anomaliascongenitas',
+  'hipertensionarterial',
+  'otrofamiliar',
+  'antecedentesquirurgicos',
+  'otrosquirurgicos',
+  'antecedentestraumaticos',
+  'otrostraumaticos',
+  'antecedentesalergicos',
+  'otrosalergicos',
+  'gestas',
+  'abortos',
+  'ningunoMas3partos',
+  'RNmenor2500',
+  'gemelares',
+  'partos',
+  'vaginales',
+  'cesareas',
+  'nacidosvivos',
+  'nacidosmuertos',
+  'viven',
+  'muertos1semana',
+  'muertosdespues1semana',
+  'fechaUltimoembarazo',
+  'RNpesomenor5lbs',
+  'RNpesomayor8lbs',
+  'RNconmayorpeso',
+  'embarazoActual',
+  'confiable',
+  'antitetanica',
+  'hospitalizacion',
+  'motivoHospitalizacion',
+  'fechaHospitalizacion',
+  'fuma',
+  'pesoanterior',
+  'talla',
+  'fur',
+  'fpp',
+  'fecharegistro',
+  'valseg',
+  'ri',
+  'psalgunavez',
+  'psultimos12meses',
+  'pspareja',
+  'fialgunavez',
+  'fiultimos12meses',
+  'fipareja',
+  'sxalgunavez',
+  'sxultimos12meses',
+  'sxpareja',
+  'an_algunavez',
+  'an_ultimos12meses',
+  'an_pareja',
+  'fechaCreacion',
+  'borradoFecha',
+],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 }
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Controlnatal');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+} 
+
+  
+async generateReportSemanal(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfWeek = startOfWeek(today);
+  const lastDayOfWeek = endOfWeek(today);
+
+  const controlnatal = await this.controlnatalRepository.find({
+    where: {
+      fechaControlnatal: Between(firstDayOfWeek, lastDayOfWeek),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(controlnatal, {
+header: [
+      'id',
+  'dpi',
+  'fechaControlnatal',
+  'diabetespersonal',
+  'hipertension',
+  'infertilidad',
+  'sxconvulsivo',
+  'nefropatia',
+  'cardiopatia',
+  'otropersonal',
+  'diabetesfamiliar',
+  'embarazogemelar',
+  'anomaliascongenitas',
+  'hipertensionarterial',
+  'otrofamiliar',
+  'antecedentesquirurgicos',
+  'otrosquirurgicos',
+  'antecedentestraumaticos',
+  'otrostraumaticos',
+  'antecedentesalergicos',
+  'otrosalergicos',
+  'gestas',
+  'abortos',
+  'ningunoMas3partos',
+  'RNmenor2500',
+  'gemelares',
+  'partos',
+  'vaginales',
+  'cesareas',
+  'nacidosvivos',
+  'nacidosmuertos',
+  'viven',
+  'muertos1semana',
+  'muertosdespues1semana',
+  'fechaUltimoembarazo',
+  'RNpesomenor5lbs',
+  'RNpesomayor8lbs',
+  'RNconmayorpeso',
+  'embarazoActual',
+  'confiable',
+  'antitetanica',
+  'hospitalizacion',
+  'motivoHospitalizacion',
+  'fechaHospitalizacion',
+  'fuma',
+  'pesoanterior',
+  'talla',
+  'fur',
+  'fpp',
+  'fecharegistro',
+  'valseg',
+  'ri',
+  'psalgunavez',
+  'psultimos12meses',
+  'pspareja',
+  'fialgunavez',
+  'fiultimos12meses',
+  'fipareja',
+  'sxalgunavez',
+  'sxultimos12meses',
+  'sxpareja',
+  'an_algunavez',
+  'an_ultimos12meses',
+  'an_pareja',
+  'fechaCreacion',
+  'borradoFecha',
+],
+
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Controlnatal');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
 }

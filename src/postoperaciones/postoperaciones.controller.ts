@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
-import { PostoperacionesService } from './postoperaciones.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res } from '@nestjs/common';
+import { PostoperacioneService } from './postoperaciones.service';
 import { CreatePostoperacioneDto } from './dto/create-postoperacione.dto';
 import { UpdatePostoperacioneDto } from './dto/update-postoperacione.dto';
 import { Postoperacione } from './entities/postoperacione.entity';
 import { SelectQueryBuilder } from 'typeorm';
-
+import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 @Controller('postoperaciones')
 export class PostoperacionesController {
-  constructor(private readonly postoperacionesService: PostoperacionesService) {}
+  constructor(private readonly postoperacionesService: PostoperacioneService) {}
 
   @Post()
   create(@Body() createPostoperacioneDto: CreatePostoperacioneDto) {
@@ -74,7 +75,60 @@ export class PostoperacionesController {
     };
   }
 
+@Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const postoperacionesData = await this.postoperacionesService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
+  if (postoperacionesData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `PostoperacionesdelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(postoperacionesData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const postoperacionesData = await this.postoperacionesService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (postoperacionesData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `PostoperacionesdelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(postoperacionesData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const postoperacionesData = await this.postoperacionesService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (postoperacionesData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `PostoperacionesdelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(postoperacionesData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
 
 
   @Get(':id')

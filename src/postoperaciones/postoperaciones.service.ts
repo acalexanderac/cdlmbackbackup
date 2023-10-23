@@ -3,11 +3,13 @@ import { CreatePostoperacioneDto } from './dto/create-postoperacione.dto';
 import { UpdatePostoperacioneDto } from './dto/update-postoperacione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Postoperacione } from './entities/postoperacione.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder, Between } from 'typeorm';
 import { Paciente } from 'src/pacientes/entities/paciente.entity';
+import * as XLSX from 'xlsx';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 
 @Injectable()
-export class PostoperacionesService {
+export class PostoperacioneService {
  
  constructor(
     @InjectRepository(Postoperacione)
@@ -94,4 +96,132 @@ export class PostoperacionesService {
   createQueryBuilder(alias: string): SelectQueryBuilder<Postoperacione> {
     return this.postoperacionesRepository.createQueryBuilder(alias);
   }
+
+  async generateReport(): Promise<Buffer> {
+  const postoperaciones = await this.postoperacionesRepository.find();
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(postoperaciones, {
+     header: [
+      'id',
+      'dpi',
+      'fechaPostop',
+      'tipoCirugia',
+      'anotacionesCirugia',
+      'observaciones',
+      'borradoFecha',
+      'fechaCreacion',
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Postoperaciones');
+
+    // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+  
+  async generateReportMensuales(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfMonth = startOfMonth(today);
+  const lastDayOfMonth = endOfMonth(today);
+
+  const postoperaciones = await this.postoperacionesRepository.find({
+    where: {
+      fechaPostop: Between(firstDayOfMonth, lastDayOfMonth),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(postoperaciones, {
+     header: [
+      'id',
+      'dpi',
+      'fechaPostop',
+      'tipoCirugia',
+      'anotacionesCirugia',
+      'observaciones',
+      'borradoFecha',
+      'fechaCreacion',
+
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 }
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Postoperaciones');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+} 
+
+  
+async generateReportSemanal(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfWeek = startOfWeek(today);
+  const lastDayOfWeek = endOfWeek(today);
+
+  const postoperaciones = await this.postoperacionesRepository.find({
+    where: {
+      fechaPostop: Between(firstDayOfWeek, lastDayOfWeek),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(postoperaciones, {
+         header: [
+      'id',
+      'dpi',
+      'fechaPostop',
+      'tipoCirugia',
+      'anotacionesCirugia',
+      'observaciones',
+      'borradoFecha',
+      'fechaCreacion',
+
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Postoperaciones');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+
 }

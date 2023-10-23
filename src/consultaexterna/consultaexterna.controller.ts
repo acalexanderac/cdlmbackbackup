@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } from '@nestjs/common';
 import { ConsultaexternaService } from './consultaexterna.service';
 import { CreateConsultaexternaDto } from './dto/create-consultaexterna.dto';
 import { UpdateConsultaexternaDto } from './dto/update-consultaexterna.dto';
 import { SelectQueryBuilder } from 'typeorm';
 import { Consultaexterna } from './entities/consultaexterna.entity';
-
+import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 @Controller('consultaexterna')
 export class ConsultaexternaController {
   constructor(private readonly consultaexternaService: ConsultaexternaService) {}
@@ -74,7 +75,61 @@ export class ConsultaexternaController {
     };
   }
 
+@Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const consultaExternaData = await this.consultaexternaService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
+  if (consultaExternaData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `ConsultaExternadelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(consultaExternaData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const consultaExternaData = await this.consultaexternaService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (consultaExternaData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `ConsultaExternadelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(consultaExternaData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const consultaExternaData = await this.consultaexternaService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (consultaExternaData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `ConsultaExternadelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(consultaExternaData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.consultaexternaService.findOne(+id);

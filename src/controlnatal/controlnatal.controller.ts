@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } from '@nestjs/common';
 import { ControlnatalService } from './controlnatal.service';
 import { CreateControlnatalDto } from './dto/create-controlnatal.dto';
 import { UpdateControlnatalDto } from './dto/update-controlnatal.dto';
 import { SelectQueryBuilder } from 'typeorm';
 import { Controlnatal } from './entities/controlnatal.entity';
+import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 
 @Controller('controlnatal')
 export class ControlnatalController {
@@ -77,10 +79,60 @@ export class ControlnatalController {
   
 
 
-   @Get('report')
-  async generateReport(): Promise<void> {
-    await this.controlnatalService.generateReport();
-   }
+    @Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const controlnatal = await this.controlnatalService.generateReport(); // Llamar al servicio para obtener los datos del informe
+
+  if (controlnatal) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `ControlNataldelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(controlnatal);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const controlnatal = await this.controlnatalService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (controlnatal) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `ControlNataldelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(controlnatal);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const controlnatal = await this.controlnatalService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (controlnatal) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `ControlNataldelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(controlnatal);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
   
   @Get(':id')
   findOne(@Param('id') id: string) {
