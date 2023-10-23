@@ -6,9 +6,7 @@ import {Request} from "express";
 import {SelectQueryBuilder} from "typeorm";
 import {Paciente} from "./entities/paciente.entity";
 import { Response } from 'express';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as os from 'os';
+
 @Controller('pacientes')
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) { }
@@ -81,24 +79,58 @@ export class PacientesController {
   }
 
   
-  @Get('report')
-  async generateReport(@Res() res: Response): Promise<void> {
-    const fileNameXLSX = 'pacientesactuales.xlsx';
-    const fileNameXLS = 'pacientesactuales.xls';
-    const folderPath = path.join(os.homedir(), 'Documents');
-    const filePathXLSX = path.join(folderPath, fileNameXLSX);
-    const filePathXLS = path.join(folderPath, fileNameXLS);
+@Get('report')
+async downloadReport(@Res() res: Response): Promise<void> {
+  const pacientesData = await this.pacientesService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
-    await this.pacientesService.generateReport();
+  if (pacientesData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `PacientesActivos(${dateString}).xlsx`;
 
-    if (fs.existsSync(filePathXLSX)) {
-      res.sendFile(fileNameXLSX, { root: folderPath });
-    } else if (fs.existsSync(filePathXLS)) {
-      res.sendFile(fileNameXLS, { root: folderPath });
-    } else {
-      res.status(404).send('Report not found');
-    }
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(pacientesData);
+  } else {
+    res.status(404).send('Report not found');
   }
+}
+
+  @Get('report/menores')
+async downloadReportMenores(@Res() res: Response): Promise<void> {
+  const pacientesData = await this.pacientesService.generateReportMenores(); // Llamar al servicio para obtener los datos del informe
+
+  if (pacientesData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `PacientesMenores(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(pacientesData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/mayores')
+async downloadReportMayores(@Res() res: Response): Promise<void> {
+  const pacientesData = await this.pacientesService.generateReportMayores(); // Llamar al servicio para obtener los datos del informe
+
+  if (pacientesData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `PacientesMayores(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(pacientesData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+
     @Get(':id')
     findOne(@Param('id') id: string) {
       return this.pacientesService.findOne(+id);

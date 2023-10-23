@@ -5,10 +5,8 @@ import { UpdateCrioterapiaDto } from './dto/update-crioterapia.dto';
 import {Request} from "express";
 import {SelectQueryBuilder} from "typeorm";
 import {Crioterapia} from "./entities/crioterapia.entity";
-import * as path from 'path';
-import * as fs from 'fs';
-import * as os from 'os';
 import { Response } from 'express';
+import {getISOWeek} from 'date-fns';
 
 @Controller('crioterapias')
 export class CrioterapiasController {
@@ -78,25 +76,60 @@ export class CrioterapiasController {
       last_page,
     };
   }
-
 @Get('report')
-  async generateReport(@Res() res: Response): Promise<void> {
-    const fileNameXLSX = 'crioterapia.xlsx';
-    const fileNameXLS = 'crioterapia.xls';
-    const folderPath = path.join(os.homedir(), 'Documents');
-    const filePathXLSX = path.join(folderPath, fileNameXLSX);
-    const filePathXLS = path.join(folderPath, fileNameXLS);
+async downloadReport(@Res() res: Response): Promise<void> {
+  const crioterapiasData = await this.crioterapiasService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
-    await this.crioterapiasService.generateReport();
+  if (crioterapiasData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `CrioterapiasdelSistema(${dateString}).xlsx`;
 
-    if (fs.existsSync(filePathXLSX)) {
-      res.sendFile(fileNameXLSX, { root: folderPath });
-    } else if (fs.existsSync(filePathXLS)) {
-      res.sendFile(fileNameXLS, { root: folderPath });
-    } else {
-      res.status(404).send('Report not found');
-    }
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(crioterapiasData);
+  } else {
+    res.status(404).send('Report not found');
   }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const crioterapiasData = await this.crioterapiasService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (crioterapiasData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `CrioterapiasdelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(crioterapiasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const crioterapiasData = await this.crioterapiasService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (crioterapiasData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `CrioterapiasdelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(crioterapiasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
 
 
 

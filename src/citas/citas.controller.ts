@@ -5,7 +5,7 @@ import { UpdateCitaDto } from './dto/update-cita.dto';
 import { SelectQueryBuilder } from 'typeorm';
 import { Cita } from './entities/cita.entity';
 import { Response } from 'express';
-
+import {getISOWeek} from 'date-fns';
 
 @Controller('citas')
 export class CitasController {
@@ -77,13 +77,59 @@ export class CitasController {
   }
 
 @Get('report')
-async generateReport(@Res() res: Response) {
-  await this.citasService.generateReport();
-  const fileName = 'citasactuales.xlsx'; // Specify the desired file name
-  res.sendFile(fileName, { root: '.' });
-}
-  
+async downloadReport(@Res() res: Response): Promise<void> {
+  const citasData = await this.citasService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
+  if (citasData) {
+    const date = new Date();
+    const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const fileName = `CitasdelSistema(${dateString}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(citasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+ 
+@Get('report/mesactual')
+async downloadReportMes(@Res() res: Response): Promise<void> {
+  const citasData = await this.citasService.generateReportMensuales(); // Llamar al servicio para obtener los datos del informe
+
+  if (citasData) {
+const date = new Date();
+const monthNames = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+const monthName = monthNames[date.getMonth()];
+const fileName = `CitasdelSistema(${monthName} ${date.getFullYear()}).xlsx`;
+
+res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+res.send(citasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
+
+@Get('report/semanaactual')
+async downloadReportSemana(@Res() res: Response): Promise<void> {
+  const citasData = await this.citasService.generateReportSemanal(); // Llamar al servicio para obtener los datos del informe
+
+  if (citasData) {
+    const date = new Date();
+    const weekNumber = getISOWeek(date);
+    const fileName = `CitasdelSistema(Semana ${weekNumber} - ${date.getFullYear()}).xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // Tipo MIME para archivos XLSX
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.send(citasData);
+  } else {
+    res.status(404).send('Report not found');
+  }
+}
   
   @Get(':id')
   findOne(@Param('id') id: string) {

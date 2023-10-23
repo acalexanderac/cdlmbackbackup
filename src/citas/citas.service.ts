@@ -2,12 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCitaDto } from './dto/create-cita.dto';
 import { UpdateCitaDto } from './dto/update-cita.dto';
 import { Paciente } from 'src/pacientes/entities/paciente.entity';
-import {  Not, Repository, SelectQueryBuilder } from 'typeorm';
+import {  Between, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cita } from './entities/cita.entity';
 import * as XLSX from 'xlsx';
-import * as ExcelJS from 'exceljs';
-
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 
 @Injectable()
 export class CitasService {
@@ -121,7 +120,7 @@ export class CitasService {
     return this.citaRepository.createQueryBuilder(alias);
   }
 
-async generateReport(): Promise<void> {
+async generateReport(): Promise<Buffer> {
   const citas = await this.citaRepository.find();
 
   // Using xlsx library to generate XLSX file
@@ -138,22 +137,74 @@ async generateReport(): Promise<void> {
   ];
   const workbookXLSX = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Citas');
-  XLSX.writeFile(workbookXLSX, 'citasactuales.xlsx');
 
-  // Using exceljs library to generate XLS file
-  const workbookXLS = new ExcelJS.Workbook();
-  const worksheetXLS = workbookXLS.addWorksheet('Citas');
-  worksheetXLS.columns = [
-    { header: 'ID', key: 'id' },
-    { header: 'Fecha Agendado', key: 'fechaAgendado' },
-    { header: 'Hora Agendado', key: 'horaAgendado' },
-    { header: 'Motivo', key: 'motivo' },
-    { header: 'Observaciones', key: 'observaciones' },
-  ];
-  worksheetXLS.addRows(citas);
-  await workbookXLS.xlsx.writeFile('citasactuales.xls');
+    // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
 }
+
+async generateReportMensuales(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfMonth = startOfMonth(today);
+  const lastDayOfMonth = endOfMonth(today);
+
+  const citas = await this.citaRepository.find({
+    where: {
+      fechaAgendado: Between(firstDayOfMonth, lastDayOfMonth),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(citas, {
+    header: ['id', 'fechaAgendado', 'horaAgendado', 'motivo', 'observaciones'],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Citas');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+} 
 
   
+async generateReportSemanal(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfWeek = startOfWeek(today);
+  const lastDayOfWeek = endOfWeek(today);
 
+  const citas = await this.citaRepository.find({
+    where: {
+      fechaAgendado: Between(firstDayOfWeek, lastDayOfWeek),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(citas, {
+    header: ['id', 'fechaAgendado', 'horaAgendado', 'motivo', 'observaciones'],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Citas');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
 }
+}
+
+

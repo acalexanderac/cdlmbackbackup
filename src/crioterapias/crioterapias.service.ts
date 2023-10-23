@@ -3,11 +3,11 @@ import { CreateCrioterapiaDto } from './dto/create-crioterapia.dto';
 import { UpdateCrioterapiaDto } from './dto/update-crioterapia.dto';
 import { Crioterapia} from "./entities/crioterapia.entity";
 import {Paciente} from "../pacientes/entities/paciente.entity";
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import {  Between, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
-import * as path from 'path';
-import * as os from 'os';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
+
 @Injectable()
 export class CrioterapiasService {
 
@@ -105,14 +105,13 @@ export class CrioterapiasService {
     return this.crioterapiaRepository.createQueryBuilder(alias);
   }
 
-  async generateReport(): Promise<void> {
-  const crioterapias = await this.crioterapiaRepository.find({
-    relations: ['paciente'],
-  });
+  
+async generateReport(): Promise<Buffer> {
+  const crioterapias = await this.crioterapiaRepository.find();
 
   // Using xlsx library to generate XLSX file
   const worksheetXLSX = XLSX.utils.json_to_sheet(crioterapias, {
-    header: [
+     header: [
       'id',
       'fechaCreacion',
       'observaciones',
@@ -136,21 +135,144 @@ export class CrioterapiasService {
     { width: 10 },
     { width: 20 },
     { width: 20 },
-    { width: 20 },
-    { width: 20 },
-    { width: 20 },
-    { width: 20 },
-    { width: 10 },
-    { width: 20 },
-    { width: 20 },
-    { width: 20 },
-    { width: 10 },
-    { width: 20 },
-    { width: 20 },
-    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+              
   ];
   const workbookXLSX = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Crioterapia');
-  XLSX.writeFile(workbookXLSX, path.join(os.homedir(), 'Documents', 'crioterapia.xlsx'));
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Crioterapias');
+
+    // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+}
+  
+  async generateReportMensuales(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfMonth = startOfMonth(today);
+  const lastDayOfMonth = endOfMonth(today);
+
+  const citas = await this.crioterapiaRepository.find({
+    where: {
+      fechaCrioterapia: Between(firstDayOfMonth, lastDayOfMonth),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(citas, {
+     header: [
+      'id',
+      'fechaCreacion',
+      'observaciones',
+      'fechaCrioterapia',
+      'cuadrantesuperiorizq',
+      'cuadrantesuperiorder',
+      'cuadranteinferiorizq',
+      'cuadranteinferiorder',
+      'notascuadrantesuperiorizq',
+      'notascuadrantesuperiorder',
+      'notascuadranteinferiorizq',
+      'notascuadranteinferiorder',
+      'notasCrioterapia',
+      'numeroCrioterapia',
+      'borradoFecha',
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 }
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Crioterapias');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
+} 
+
+  
+async generateReportSemanal(): Promise<Buffer> {
+  const today = new Date();
+  const firstDayOfWeek = startOfWeek(today);
+  const lastDayOfWeek = endOfWeek(today);
+
+  const citas = await this.crioterapiaRepository.find({
+    where: {
+      fechaCrioterapia: Between(firstDayOfWeek, lastDayOfWeek),
+    },
+  });
+
+  // Using xlsx library to generate XLSX file
+  const worksheetXLSX = XLSX.utils.json_to_sheet(citas, {
+         header: [
+      'id',
+      'fechaCreacion',
+      'observaciones',
+      'fechaCrioterapia',
+      'cuadrantesuperiorizq',
+      'cuadrantesuperiorder',
+      'cuadranteinferiorizq',
+      'cuadranteinferiorder',
+      'notascuadrantesuperiorizq',
+      'notascuadrantesuperiorder',
+      'notascuadranteinferiorizq',
+      'notascuadranteinferiorder',
+      'notasCrioterapia',
+      'numeroCrioterapia',
+      'borradoFecha',
+
+    ],
+    skipHeader: false,
+  });
+  worksheetXLSX['!cols'] = [
+    { width: 10 },
+    { width: 20 },
+    { width: 20 },
+    { width: 30 },
+    { width: 50 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+    { width: 30 },
+              
+  ];
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Crioterapias');
+
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
 }
 }

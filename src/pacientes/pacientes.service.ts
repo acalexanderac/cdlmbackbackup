@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { LessThan, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Paciente} from "./entities/paciente.entity";
 import * as XLSX from 'xlsx';
 import {CreatePacienteDto} from "./dto/create-paciente.dto";
 import {UpdatePacienteDto} from "./dto/update-paciente.dto";
-import * as path from 'path';
-import * as os from 'os';
+
+
 
 @Injectable()
 export class PacientesService {
@@ -76,7 +76,7 @@ export class PacientesService {
     return this.pacienteRepository.createQueryBuilder(alias);
   }
 
-async generateReport(): Promise<void> {
+async generateReport(): Promise<Buffer> {
   const pacientes = await this.pacienteRepository.find();
 
   // Using xlsx library to generate XLSX file
@@ -121,10 +121,130 @@ async generateReport(): Promise<void> {
     { width: 20 },
     { width: 20 },
   ];
+
+  
   const workbookXLSX = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Pacientes');
-  XLSX.writeFile(workbookXLSX, path.join(os.homedir(), 'Documents', 'pacientesActuales.xlsx'));
 
-
+  // Generar el archivo en memoria
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+  return xlsxData;
 }
+  
+ async generateReportMenores(): Promise<Buffer> {
+  const pacientes = await this.pacienteRepository.find({
+    where: {
+      edadPaciente: LessThan(18),
+    },
+  });
+
+  const worksheetXLSX = XLSX.utils.json_to_sheet(pacientes, {
+    header: [
+      'id',
+      'nombrePaciente',
+      'docIdentificacion',
+      'edadPaciente',
+      'direccion',
+      'estadoCivil',
+      'noIggs',
+      'aseguradora',
+      'telefonoContacto',
+      'religion',
+      'borradoFecha',
+      'fechaNacimiento',
+      'contacto1',
+      'contacto2',
+      'telContacto1',
+      'telContacto2',
+      'fechaCreacion',
+    ],
+    skipHeader: false,
+  });
+
+  worksheetXLSX['!cols'] = [
+    { width: 5 },
+    { width: 35 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+  ];
+
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Pacientes');
+
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+
+  return xlsxData;
+}
+  
+  async generateReportMayores(): Promise<Buffer> {
+  const pacientes = await this.pacienteRepository.find({
+    where: {
+      edadPaciente: MoreThanOrEqual(18),
+    },
+  });
+
+  const worksheetXLSX = XLSX.utils.json_to_sheet(pacientes, {
+    header: [
+      'id',
+      'nombrePaciente',
+      'docIdentificacion',
+      'edadPaciente',
+      'direccion',
+      'estadoCivil',
+      'noIggs',
+      'aseguradora',
+      'telefonoContacto',
+      'religion',
+      'borradoFecha',
+      'fechaNacimiento',
+      'contacto1',
+      'contacto2',
+      'telContacto1',
+      'telContacto2',
+      'fechaCreacion',
+    ],
+    skipHeader: false,
+  });
+
+  worksheetXLSX['!cols'] = [
+    { width: 5 },
+    { width: 35 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+  ];
+
+  const workbookXLSX = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbookXLSX, worksheetXLSX, 'Pacientes');
+
+  const xlsxData = XLSX.write(workbookXLSX, { bookType: 'xlsx', type: 'buffer' });
+
+  return xlsxData;
+}
+
 }
