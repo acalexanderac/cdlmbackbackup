@@ -11,33 +11,35 @@ import { Role } from 'src/common/enums/rol.enum';
 
 
 @Controller('pacientes')
-@Auth(Role.USER)
 
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) { }
-
+@Auth(Role.USER)
   @Post()
   create(@Body() createPacienteDto: CreatePacienteDto) {
     return this.pacientesService.create(createPacienteDto);
-  }
-
+}
+  
+@Auth(Role.USER)
   @Get()
   findAll() {
     return this.pacientesService.findAll();
   }
 
 
-
+@Auth(Role.USER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePacienteDto: UpdatePacienteDto) {
     return this.pacientesService.update(+id, updatePacienteDto);
   }
 
+  @Auth(Role.USER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.pacientesService.remove(+id);
   }
 
+  @Auth(Role.USER)
   @Get('search')
   async searchPatients(@Query('term') term: string) {
     const patients = await this.pacientesService.searchPatients(term);
@@ -45,6 +47,7 @@ export class PacientesController {
   }
 
   @Get('sort')
+  @Auth(Role.USER)
   async backend(
     @Req() req: Request,
     @Query('s') searchString: string,
@@ -84,7 +87,7 @@ export class PacientesController {
   }
 
   
-@Get('report')
+  @Get('report')
 async downloadReport(@Res() res: Response): Promise<void> {
   const pacientesData = await this.pacientesService.generateReport(); // Llamar al servicio para obtener los datos del informe
 
@@ -135,7 +138,7 @@ async downloadReportMayores(@Res() res: Response): Promise<void> {
   }
 }
 
-
+@Auth(Role.USER)
     @Get(':id')
     findOne(@Param('id') id: string) {
       return this.pacientesService.findOne(+id);
