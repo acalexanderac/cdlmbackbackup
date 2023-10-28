@@ -11,7 +11,7 @@ import { Role } from 'src/common/enums/rol.enum';
 
 
 @Controller('pacientes')
-@Auth(Role.ADMIN)
+@Auth(Role.USER)
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) { }
 

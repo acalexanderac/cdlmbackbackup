@@ -9,7 +9,7 @@ import {getISOWeek} from 'date-fns';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/common/enums/rol.enum';
 @Controller('postoperaciones')
-@Auth(Role.ADMIN)
+@Auth(Role.USER)
 export class PostoperacionesController {
   constructor(private readonly postoperacionesService: PostoperacioneService) {}
 

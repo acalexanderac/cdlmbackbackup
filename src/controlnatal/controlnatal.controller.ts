@@ -10,7 +10,7 @@ import { Role } from 'src/common/enums/rol.enum';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 
 @Controller('controlnatal')
-  @Auth(Role.ADMIN)
+  @Auth(Role.USER)
 export class ControlnatalController {
   constructor(private readonly controlnatalService: ControlnatalService) {}
 
