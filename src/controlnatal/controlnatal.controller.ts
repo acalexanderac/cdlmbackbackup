@@ -6,8 +6,11 @@ import { SelectQueryBuilder } from 'typeorm';
 import { Controlnatal } from './entities/controlnatal.entity';
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Role } from 'src/common/enums/rol.enum';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 
 @Controller('controlnatal')
+  @Auth(Role.ADMIN)
 export class ControlnatalController {
   constructor(private readonly controlnatalService: ControlnatalService) {}
 

@@ -6,8 +6,12 @@ import { SelectQueryBuilder } from 'typeorm';
 import { Cita } from './entities/cita.entity';
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
+
 
 @Controller('citas')
+@Auth(Role.ADMIN)
 export class CitasController {
   constructor(private readonly citasService: CitasService) {}
 

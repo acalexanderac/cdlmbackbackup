@@ -7,8 +7,11 @@ import {SelectQueryBuilder} from "typeorm";
 import {Crioterapia} from "./entities/crioterapia.entity";
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
 
 @Controller('crioterapias')
+  @Auth(Role.ADMIN)
 export class CrioterapiasController {
   constructor(private readonly crioterapiasService: CrioterapiasService) {}
 

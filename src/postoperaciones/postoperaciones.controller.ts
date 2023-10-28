@@ -6,7 +6,10 @@ import { Postoperacione } from './entities/postoperacione.entity';
 import { SelectQueryBuilder } from 'typeorm';
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
 @Controller('postoperaciones')
+@Auth(Role.ADMIN)
 export class PostoperacionesController {
   constructor(private readonly postoperacionesService: PostoperacioneService) {}
 

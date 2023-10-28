@@ -7,7 +7,10 @@ import { SelectQueryBuilder } from "typeorm";
 import { Colposcopia } from './entities/colposcopia.entity';
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
 @Controller('colposcopias')
+@Auth(Role.ADMIN)
 export class ColposcopiasController {
   constructor(private readonly colposcopiasService: ColposcopiasService) {}
 

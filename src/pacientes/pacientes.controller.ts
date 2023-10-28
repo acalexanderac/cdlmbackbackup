@@ -6,8 +6,12 @@ import {Request} from "express";
 import {SelectQueryBuilder} from "typeorm";
 import {Paciente} from "./entities/paciente.entity";
 import { Response } from 'express';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
+
 
 @Controller('pacientes')
+@Auth(Role.ADMIN)
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) { }
 

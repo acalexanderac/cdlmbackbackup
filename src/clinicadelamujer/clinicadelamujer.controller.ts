@@ -6,7 +6,10 @@ import { Clinicadelamujer } from './entities/clinicadelamujer.entity';
 import { SelectQueryBuilder } from 'typeorm';
 import { Response } from 'express';
 import {getISOWeek} from 'date-fns';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Role } from 'src/common/enums/rol.enum';
 @Controller('clinicadelamujer')
+@Auth(Role.ADMIN)
 export class ClinicadelamujerController {
   constructor(private readonly clinicadelamujerService: ClinicadelamujerService) {}
 
