@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePacienteDto } from './create-paciente.dto';
-import {IsInt, IsOptional, IsPositive, IsString, MaxLength} from "class-validator";
+import {IsInt, IsOptional, IsPositive, IsString} from "class-validator";
 
 export class UpdatePacienteDto extends PartialType(CreatePacienteDto) {
 
@@ -10,7 +10,6 @@ export class UpdatePacienteDto extends PartialType(CreatePacienteDto) {
     nombrePaciente: string;
 
     @IsString()
-    @MaxLength(13)
     @IsOptional()
 
     docIdentificacion: string;

@@ -62,13 +62,14 @@ export class Paciente {
     telContacto2:string;
     
 @BeforeInsert()
-    @BeforeUpdate()
-    calculateAge() {
-        const birthDate = new Date(this.fechaNacimiento);
-        const currentDate = new Date();
-        const ageInMillis = currentDate.getTime() - birthDate.getTime();
-        this.edadPaciente = Math.floor(ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
-    }
+@BeforeUpdate()
+calculateAge() {
+    const birthDate = new Date(this.fechaNacimiento);
+    const currentDate = new Date();
+    const ageInMillis = currentDate.getTime() - birthDate.getTime();
+    const calculatedAge = Math.floor(ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
+    this.edadPaciente = calculatedAge === 0 ? 1 : calculatedAge;
+}
 
 
 
