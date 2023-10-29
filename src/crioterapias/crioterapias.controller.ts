@@ -13,40 +13,40 @@ import { Role } from 'src/common/enums/rol.enum';
 @Controller('crioterapias')
 export class CrioterapiasController {
   constructor(private readonly crioterapiasService: CrioterapiasService) {}
-  @Auth(Role.USER)
 
   @Post()
+      @Auth(Role.USER)
   create(@Body() createCrioterapiaDto: CreateCrioterapiaDto) {
     return this.crioterapiasService.create(createCrioterapiaDto);
   }
-  @Auth(Role.USER)
 
   @Get()
+      @Auth(Role.USER)
   findAll() {
     return this.crioterapiasService.findAll();
   }
-  @Auth(Role.USER)
 
   @Patch(':id')
+      @Auth(Role.USER)
   update(@Param('id') id: string, @Body() updateCrioterapiaDto: UpdateCrioterapiaDto) {
     return this.crioterapiasService.update(+id, updateCrioterapiaDto);
   }
-  @Auth(Role.USER)
 
   @Delete(':id')
+    @Auth(Role.USER)
   remove(@Param('id') id: string) {
     return this.crioterapiasService.remove(+id);
   }
-  @Auth(Role.USER)
 
   @Get('search')
+    @Auth(Role.USER)
   async searchPatients(@Query('term') term: string) {
     const crioterapias = await this.crioterapiasService.searchPatients(term);
     return crioterapias;
   }
-  @Auth(Role.USER)
 
   @Get('sort')
+      @Auth(Role.USER)
   async backend(
       @Req() req: Request,
       @Query('s') searchString: string,
@@ -141,9 +141,9 @@ async downloadReportSemana(@Res() res: Response): Promise<void> {
 
 
 
-  @Auth(Role.USER)
 
   @Get(':id')
+      @Auth(Role.USER)
   findOne(@Param('id') id: string) {
     return this.crioterapiasService.findOne(+id);
   }
