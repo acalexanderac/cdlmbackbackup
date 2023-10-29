@@ -11,35 +11,40 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Role } from 'src/common/enums/rol.enum';
 
 @Controller('crioterapias')
-  @Auth(Role.USER)
 export class CrioterapiasController {
   constructor(private readonly crioterapiasService: CrioterapiasService) {}
+  @Auth(Role.USER)
 
   @Post()
   create(@Body() createCrioterapiaDto: CreateCrioterapiaDto) {
     return this.crioterapiasService.create(createCrioterapiaDto);
   }
+  @Auth(Role.USER)
 
   @Get()
   findAll() {
     return this.crioterapiasService.findAll();
   }
+  @Auth(Role.USER)
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCrioterapiaDto: UpdateCrioterapiaDto) {
     return this.crioterapiasService.update(+id, updateCrioterapiaDto);
   }
+  @Auth(Role.USER)
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.crioterapiasService.remove(+id);
   }
+  @Auth(Role.USER)
 
   @Get('search')
   async searchPatients(@Query('term') term: string) {
     const crioterapias = await this.crioterapiasService.searchPatients(term);
     return crioterapias;
   }
+  @Auth(Role.USER)
 
   @Get('sort')
   async backend(
@@ -136,6 +141,7 @@ async downloadReportSemana(@Res() res: Response): Promise<void> {
 
 
 
+  @Auth(Role.USER)
 
   @Get(':id')
   findOne(@Param('id') id: string) {
